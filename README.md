@@ -1,4 +1,9 @@
-# simple-react-full-stack
+# first-react-proj
+
+## used a boilerplate to start things fast (https://github.com/crsandeep/simple-react-full-stack)
+
+this is my first proj in react, more of a POC for myself so good coding or documentation are not necessarily to be expected.
+below is original readme
 
 [![Build Status](https://travis-ci.org/crsandeep/simple-react-full-stack.svg?branch=master)](https://travis-ci.org/crsandeep/simple-react-full-stack)
 
