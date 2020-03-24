@@ -10,7 +10,6 @@
     "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
   },
-
   "engines": {
     "node": "13.x.x"
   },
