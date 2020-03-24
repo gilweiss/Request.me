@@ -3,14 +3,6 @@ import './app.css';
 import axios from 'axios';
 
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-
-
 class MyForm extends React.Component {
   constructor(props) {
      super(props);
@@ -79,7 +71,7 @@ class MyForm extends React.Component {
          <input type="submit" value="Submit"/>
        </form>
        <br/> <br/>
-       <button onClick={() =>this.getStoredRequests()} >get all past requests</button>
+             <p id="hidden button, you can also copy paste the suffix"  hidden  onClick={() =>this.getStoredRequests()} >/api/getRequests</p>
        </div>
      );
    }
