@@ -5,6 +5,30 @@ const bodyParser = require('body-parser');
 const db = require("./database.js")
 
 
+//start of: TRYING TO INSTALL PG DB, GOD SAVES ME//
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+});
+
+
+app.get('/db', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      const result = await client.query('SELECT * FROM main_table');
+      const results = { 'results': (result) ? result.rows : null};
+      res.send(JSON.stringify(results));
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
+
+//end of: TRYING TO INSTALL PG DB, GOD SAVES ME//
+
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
