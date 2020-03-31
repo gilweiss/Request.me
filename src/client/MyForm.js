@@ -40,9 +40,11 @@ class MyForm extends React.Component {
        {data : this.state.textbox}
        )
     .then((response) => {
-      console.log(response);
+      console.log(response.data.message);
+      alert(response.data.message);
     }, (error) => {
       console.log(error);
+      alert("something went wrong, sorry");
     });
     }
 

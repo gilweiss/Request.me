@@ -1,0 +1,4 @@
+-make db dev login with .env file instead of env-string in webpack
+-add try catch error handling
+-clean code
+-improve code (promises, async, seperate code blocks from index)
