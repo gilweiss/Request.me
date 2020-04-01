@@ -143,24 +143,22 @@ app.get('/api/db', async (req, res) => {
         var reqBody = request.body.data;
         console.log(reqBody);
   
-
-
-        console.log('INSERT INTO '+ mainTableName+'(text)'+ 
-        'VALUES('+reqBody+');');
-
     pool.query(
         
         'INSERT INTO '+ mainTableName+'(text) '+ 
-        'VALUES(\''+reqBody+'\');'
-        
-        , error => {
-      if (error) {
-        throw error
+        'VALUES ($1);', [reqBody],
+         error => {
+             if (error) {
+         throw error
       }
       response.status(201).json({ status: 'success', message: 'your request was successfully added to review pool :)' })
     })
   });
 
+
+  
+
+  
 
 // old sqlite db func:
 
