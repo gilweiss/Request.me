@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import './app.css';
 import axios from 'axios';
-
+import Button from 'react-bootstrap/Button'
 
 class MyForm extends React.Component {
   constructor(props) {
      super(props);
      this.state = {
-      textbox: 'Please be reasonable with your request'
+      textbox: ''
      };
      this.handleSubmit = this.handleSubmit.bind(this);
      this.handleChange = this.handleChange.bind(this);
@@ -48,17 +48,115 @@ class MyForm extends React.Component {
     });
     }
 
-    getStoredRequests(){
-     
+
+
+        //here is some ugly code until i get the serenity to learn how to do it properly:
+
+
+         getReqPool = async () => {
+
+          var answer = await this.getReqPool2();
+          var returnString = "";
+          for(var i = 0; i < answer.results.length; i++){
+            returnString += answer.results[i].id +") ";
+            returnString += answer.results[i].request +"\n\n";
+            //console.log(answer.results[i]); // Object with id and time
+
+        }
+
+           alert(returnString);
+         }
+
+         getReqPool2 = () => {
+
       console.log('asking server for stored requests')
-        axios.get('/api/getRequests')
+      return new Promise (function(resolve, reject){
+        axios.get('/api/db')
       .then((response) => {
         console.log(response.data);
+        resolve(response.data);
       }, (error) => {
         console.log(error);
       });
-      }
+      });
+    }
+
+
+     
+    
+
+
+    //bad func
+  //   getReqPool = () =>{
+     
+  //     alert (this.getStoredRequests());
+  //  }
+
+
+  // getStoredRequestsPromise(){ //testing split callback
+     
+  //     console.log('asking server for stored requests')
+  //       axios.get('/api/db')
+  //       }
+
+  //       getReqPool(){ //testing split callback - other half
+     
+  //         this.getStoredRequestsPromise().then((response) => {
+  //               console.log(response.data);
+  //             }, (error) => {
+  //               console.log(error);
+  //             });
+  //             }
+      
+
+
+
+
+   //here is some ugly code until i get the serenity to learn how to do it properly: fublicate
+
+  //  getStoredRequestsPromise(){ //testing split callback
+     
+  //   console.log('asking server for stored requests')
+  //     axios.get('/api/db')
+  //   }
+
+  //   getReqPool = () =>{ //testing split callback - other half
+ 
+  //     this.getStoredRequestsPromise().then((response) => {
+  //     alert(response.data);
+  //   }, (error) => {
+  //     console.log(error);
+  //   });
+  //}
+
+
+
+/////////////////////END OF REALLY UGLY
+
+
+
+//backup:
+    // getStoredRequests(){
+     
+    //   console.log('asking server for stored requests')
+    //     axios.get('/api/db')
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   }, (error) => {
+    //     console.log(error);
+    //   });
+    //   }
+
+      
+
+     
   
+     
+
+
+
+
+
 
    render() {
      return (
@@ -66,13 +164,16 @@ class MyForm extends React.Component {
        <form onSubmit={this.handleSubmit} >
          
            <h1>Ask for stuff</h1>
-           
-           <textarea rows="6" cols="50" value={this.state.textbox} onChange={this.handleChange}/>
+           <br/>
+           <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChange}/>
          
          <br/><br/>
-         <input type="submit" value="Submit"/>
+         <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}
+         <Button variant="info" onClick={this.getReqPool} >request pool</Button>
        </form>
        <br/> <br/>
+       
+       
              <p id="hidden button, you can also copy paste the suffix"  hidden  onClick={() =>this.getStoredRequests()} >/api/getRequests</p>
        </div>
      );

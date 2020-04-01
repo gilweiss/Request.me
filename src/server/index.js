@@ -62,7 +62,7 @@ function createMainTable() {
         pool.query(
             'CREATE TABLE main_table(' +
             '    id SERIAL PRIMARY KEY,' +
-            '    text VARCHAR' +
+            '    request VARCHAR' +
             ' );'
             , async (err, res) => {
             
@@ -145,7 +145,7 @@ app.get('/api/db', async (req, res) => {
   
     pool.query(
         
-        'INSERT INTO '+ mainTableName+'(text) '+ 
+        'INSERT INTO '+ mainTableName+'(request) '+ 
         'VALUES ($1);', [reqBody],
          error => {
              if (error) {
