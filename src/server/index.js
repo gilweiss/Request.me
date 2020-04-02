@@ -60,9 +60,9 @@ function createMainTable() {
     console.log("entering createMainTableFunc ");
      return new Promise (function(resolve, reject){
         pool.query(
-            'CREATE TABLE main_table(' +
+            'CREATE TABLE '+mainTableName+'(' +
             '    id SERIAL PRIMARY KEY,' +
-            '    request VARCHAR' +
+            '    request VARCHAR, done BOOLEAN DEFAULT false' +
             ' );'
             , async (err, res) => {
             

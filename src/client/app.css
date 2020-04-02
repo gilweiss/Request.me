@@ -6,3 +6,10 @@ body {
   text-align: center;
   margin: auto;
 }
+
+div.test1 {
+  
+  margin: auto;
+  border: 3px solid #73AD21;
+  
+}
