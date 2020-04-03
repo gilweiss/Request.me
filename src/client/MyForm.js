@@ -4,15 +4,21 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
 
+
 class MyForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       textbox: '',
-      poolTable: ''
+      poolTable: '',
+      mailbox: '',
+      userbox: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeTB = this.handleChangeTB.bind(this);
+    this.handleChangeUB = this.handleChangeUB.bind(this);
+    this.handleChangeMB = this.handleChangeMB.bind(this);
+    
   }
 
   testButton = () => {
@@ -20,8 +26,16 @@ class MyForm extends React.Component {
     alert("test");
   }
 
-  handleChange(event) {
+  handleChangeTB(event) {
     this.setState({ textbox: event.target.value });
+  }
+
+  handleChangeUB(event) {
+    this.setState({ userbox: event.target.value });
+  }
+
+  handleChangeMB(event) {
+    this.setState({ mailbox: event.target.value });
   }
 
   handleSubmit(event) {
@@ -29,6 +43,8 @@ class MyForm extends React.Component {
     event.preventDefault();
     this.sendTextbox();
     this.setState({ textbox: "" });
+    this.setState({ userbox: "" });
+    this.setState({ mailbox: "" });
 
   }
 
@@ -39,7 +55,7 @@ class MyForm extends React.Component {
     console.log('sending')
     axios.post(
       '/api/sendTextbox',
-      { data: this.state.textbox }
+      { data: this.state.textbox, name:this.state.userbox, mail:this.state.mailbox }
     )
       .then((response) => {
         console.log(response.data.message);
@@ -68,8 +84,6 @@ class MyForm extends React.Component {
       // returnString += answer.results[i].id + ") ";
       // returnString += answer.results[i].request + "\n\n";
 
-      
-
       let done = answer.results[i].done;
       let reqStack =[];
       
@@ -80,9 +94,6 @@ class MyForm extends React.Component {
           reqStack.push(answer.results[i].request);
         }
         
-      
-
-
       tableBody.push(
       <tr key={answer.results[i].id}>
         <td>
@@ -91,10 +102,12 @@ class MyForm extends React.Component {
         <td>
           {reqStack}
         </td>
+        <td>
+         {answer.results[i].owner}
+        </td>
       </tr>
       )
       }
-    //alert(returnString);
     return tableBody;
   }
 
@@ -120,13 +133,14 @@ class MyForm extends React.Component {
     var tableBody = await this.getReqPool();
     let res = []
     res.push(
-      <div class="div.test1"> 
+      <div> 
         <h1 id='title'>Request Table</h1>
-        <Table size="sm" bordered='true' id='requestTable' condensed="true" exportCSV="true" >
+        <Table size="sm" bordered='true' id='requestTable' condensed="true" >
           <tbody>
             <tr>
               <th>ID</th>
               <th>Request</th>
+              <th>Owner</th>
             </tr>
             {tableBody}
           </tbody>
@@ -216,8 +230,16 @@ class MyForm extends React.Component {
 
           <h1>Ask for stuff</h1>
           <br />
-          <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChange} />
-
+          <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} /> 
+          <br />
+          
+          <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
+          <input type="text" id="name" name="fname" placeholder="your name" value={this.state.userbox}    onChange={this.handleChangeUB} />
+          <br/>
+          <label value=" "><b> EMAIL to update about your request : &nbsp;&nbsp; </b> </label>
+          <input type="text" id="mail" name="fmail" placeholder="@optional field" value={this.state.mailbox}    onChange={this.handleChangeMB} />
+          <br/>
+          
           <br /><br />
           <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}
           <Button variant="warning" onClick={this.renderReqTable} >request pool table</Button>

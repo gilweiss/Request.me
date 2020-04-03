@@ -2,8 +2,7 @@ const express = require('express');
 const os = require('os');
 const app = express();
 const bodyParser = require('body-parser');
-const db = require("./database.js");
-
+const myMail = require('./myMail');
 
 //start of: TRYING TO INSTALL PG DB because of heroku, GOD SAVE ME FROM THIS CRAP//
 const { Pool } = require('pg');
@@ -62,7 +61,7 @@ function createMainTable() {
         pool.query(
             'CREATE TABLE '+mainTableName+'(' +
             '    id SERIAL PRIMARY KEY,' +
-            '    request VARCHAR, done BOOLEAN DEFAULT false' +
+            '    request VARCHAR, done BOOLEAN DEFAULT false, owner VARCHAR, mail VARCHAR' +
             ' );'
             , async (err, res) => {
             
@@ -123,7 +122,7 @@ async function createTableMgr() {
 app.get('/api/db', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query('SELECT * FROM main_table');
+      const result = await client.query('SELECT id, request, done, owner FROM main_table ORDER BY id');
       const results = { 'results': (result) ? result.rows : null};
       res.send(JSON.stringify(results));
       client.release();
@@ -141,12 +140,16 @@ app.get('/api/db', async (req, res) => {
     '/api/sendTextbox', 
     (request, response) => {
         var reqBody = request.body.data;
+        var ownerName = request.body.name
+        var ownerMail = request.body.mail
         console.log(reqBody);
+        console.log(ownerName);
+        console.log(ownerMail);
   
     pool.query(
         
-        'INSERT INTO '+ mainTableName+'(request) '+ 
-        'VALUES ($1);', [reqBody],
+        'INSERT INTO '+ mainTableName+'(request, owner, mail) '+ 
+        'VALUES ($1,$2,$3);', [reqBody, ownerName, ownerMail],
          error => {
              if (error) {
          throw error
@@ -156,8 +159,153 @@ app.get('/api/db', async (req, res) => {
   });
 
 
+  app.post( 
+    '/api/admin/reqDone', 
+    (request, response) => {
+        var reqBody = request.body.data;
+        var ownerName = request.body.name
+        var ownerMail = request.body.mail
+        console.log(reqBody);
+        console.log(ownerName);
+        console.log(ownerMail);
   
+    pool.query(
+        
+        'INSERT INTO '+ mainTableName+'(request, owner, mail) '+ 
+        'VALUES ($1,$2,$3);', [reqBody, ownerName, ownerMail],
+         error => {
+             if (error) {
+         throw error
+      }
+      response.status(201).json({ status: 'success', message: 'your request was successfully added to review pool :)' })
+    })
+  });
 
+                          // i know its not secure, but there isnt much to secure yet. please dont abuse it :)
+
+
+ app.get('/api/doneid/:id', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      const result = await client.query(
+        'UPDATE '+ mainTableName+' SET done= \'true\' '+ 
+        'WHERE ID = ($1)', [req.params.id], (err, res) => {
+        
+             if (err) {
+         throw error
+      }});
+   
+    const results = { 'results': (result) ? result.rows : null};
+    
+
+    console.log("request: "+results+" was marked \'done\'");
+    console.log("request: "+req.params.id+" was marked \'done\'");
+    
+    
+    const adress = await client.query(
+
+        // 'SELECT mail FROM '+ mainTableName+
+        // ' WHERE id = ($1)', [req.params.id],
+        //  error => {
+        //      if (error) {
+        //  throw error}}
+
+        'SELECT mail FROM '+ mainTableName+
+        ' WHERE id = ('+req.params.id+');'
+         
+         );
+
+    const request = await client.query(
+       'SELECT request FROM '+ mainTableName+
+       ' WHERE id = ('+req.params.id+');' );  
+
+
+       const owner = await client.query(
+           'SELECT owner FROM '+ mainTableName+
+           ' WHERE id = ('+req.params.id+');');  
+    owner2 = owner.rows[0].owner
+    adress2 = adress.rows[0].mail
+    request2 = request.rows[0].request
+    
+        console.log(request2);
+      console.log("2mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2);
+      myMail.sendMail(adress2, req.params.id, owner2, request2  );
+      console.log("mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2);
+      res.send("success! mail was sent to: "+adress2);
+    } catch (err) {
+      console.error(err);
+      res.send("Error this" + err);
+    }
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//TEST AREA::::::::::::
+
+// ;(async () => {
+//     const client = await pool.connect()
+//     try {
+//       const res = await client.query('SELECT * FROM users WHERE id = $1', [1])
+//       console.log(res.rows[0])
+//     } finally {
+//       // Make sure to release the client before any error handling,
+//       // just in case the error handling itself throws an error.
+//       client.release()
+//     }
+//   })().catch(err => console.log(err.stack))
+
+// app.get('/api/doneidi', async (req, res) => {
+//     const client = await pool.connect()
+//     try {
+//       const results = await client.query(
+//         'INSERT INTO main_table(request) VALUES('test1 text');)
+//         console.log(res.rows[0])
+//     } finally {
+//         // Make sure to release the client before any error handling,
+//         // just in case the error handling itself throws an error.
+//         client.release()
+//       }
+
+    //const results2 = { 'results': (result) ? result.rows : null};
+    //res.send("RES.SEND = "+ JSON.stringify(results2));
+   // })//)().catch(err => console.log(err.stack))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//myMail.sendMail("gilweiss90@gmail.com");
+
+
+
+
+  
   
 
 // old sqlite db func:

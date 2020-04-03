@@ -2,3 +2,4 @@
 -add try catch error handling
 -clean code
 -improve code (promises, async, seperate code blocks from index)
+-fix that idiot db not returning paramerised queries results for immidiate usage in code (maybe multiple  connections?)
