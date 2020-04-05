@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import './app.css';
 import axios from 'axios';
-import Button from 'react-bootstrap/Button'
-import Table from 'react-bootstrap/Table'
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
+import { AwesomeComponent } from './spnr';
+import { updateStateLDR } from './spnr';
 
+
+// function updateStateLDR(text){
+//   this.setState({text})
+// }
 
 class MyForm extends React.Component {
   constructor(props) {
@@ -12,13 +18,22 @@ class MyForm extends React.Component {
       textbox: '',
       poolTable: '',
       mailbox: '',
-      userbox: ''
+      requestSent: 'true',
+      userbox: '',
+      loading: false,
+      textboxToSend: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeTB = this.handleChangeTB.bind(this);
     this.handleChangeUB = this.handleChangeUB.bind(this);
     this.handleChangeMB = this.handleChangeMB.bind(this);
-    
+
+    //this.loader2 = new AwesomeComponent().render.bind(this);
+
+  }
+
+  updateChild = (text) => {
+    updateStateLDR(text);
   }
 
   testButton = () => {
@@ -38,15 +53,56 @@ class MyForm extends React.Component {
     this.setState({ mailbox: event.target.value });
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     //alert('request submitted: ' + this.state.textbox);
     event.preventDefault();
-    this.sendTextbox();
-    this.setState({ textbox: "" });
-    this.setState({ userbox: "" });
-    this.setState({ mailbox: "" });
+    //this.sendTextbox();
+    this.submitMainForm();
+    this.setState({ requestSent: "false" });
 
   }
+
+  //wait 5 sec for DAWIN, then start real loading (should be complete by then though)
+  submitMainForm = () => {
+    this.setState({ loading: true });
+    this.updateChild({ loading: true });
+    this.setState({ textboxToSend: this.state.textbox });
+    this.setState({ textbox: "S E N D I N G . . . . . . " });
+    setTimeout(()=>{this.sendTextbox();},2000);
+    
+    
+    //    setTimeout(this.loadingTextTimeFunc(this.state.loading,0,"loading...............", 5000), 100); 
+
+  }
+  ////
+
+
+  //  loadingTextTimeFunc =  (isWaiting, i, loadingTextString, minimumTimeLim) => {
+
+  //   return () => {
+  //       if (!isWaiting && minimumTimeLim<=0) {
+  //         this.setState({textbox: loadingTextString});
+  //         return;
+  //       }
+  //       minimumTimeLim -= 100;
+  //       var textString = loadingTextString.slice(0, i) +'_'+ loadingTextString.slice(i+1, loadingTextString.length)
+  //       this.setState({textbox: textString});
+  //       if (i<loadingTextString.length){
+  //         i++
+  //       }
+  //       else{
+  //         i=0;
+  //       }
+
+  //       if(this.state.loading == false) {
+  //         isWaiting = false;
+  //       }
+
+  //       setTimeout(this.loadingTextTimeFunc(isWaiting, i, loadingTextString, minimumTimeLim), 100); 
+
+  //   }   
+
+  // }
 
 
 
@@ -55,12 +111,23 @@ class MyForm extends React.Component {
     console.log('sending')
     axios.post(
       '/api/sendTextbox',
-      { data: this.state.textbox, name:this.state.userbox, mail:this.state.mailbox }
+      { data: this.state.textboxToSend, name: this.state.userbox, mail: this.state.mailbox }
     )
       .then((response) => {
         console.log(response.data.message);
-        alert(response.data.message);
+        this.updateChild({ loading: false });
+        this.setState({ loading: false });
+        this.setState({ textbox: response.data.message });
+        this.setState({ userbox: "" });
+        this.setState({ mailbox: "" });
+        setTimeout(()=>{this.setState({ textbox: "" });},5000);
+        
       }, (error) => {
+        this.setState({ textbox: "" });
+        this.updateChild({ loading: false });
+        this.setState({ loading: false });
+        this.setState({ userbox: "" });
+        this.setState({ mailbox: "" });
         console.log(error);
         alert("something went wrong, sorry");
       });
@@ -71,10 +138,18 @@ class MyForm extends React.Component {
   //here is some ugly code until i get the serenity to learn how to do it properly:
 
 
-
+  renderReqTable =  () => {
+    this.setState({ loading: true });
+    this.updateChild({ loading: true });
+    this.setState({ textbox: "L O A D I N G . . . . . . " });
+    setTimeout(()=>{this.renderReqTable2();},1500);
+  }
 
   getReqPool = async () => {
 
+    
+
+    //this.updateChild({loading: false});
     var answer = await this.getReqPool2();
     // var returnString = "";
     var tableBody = [];
@@ -85,29 +160,29 @@ class MyForm extends React.Component {
       // returnString += answer.results[i].request + "\n\n";
 
       let done = answer.results[i].done;
-      let reqStack =[];
-      
-      if (done){
+      let reqStack = [];
+
+      if (done) {
         reqStack.push(
-            <s>{answer.results[i].request}</s>);
-          } else{
-          reqStack.push(answer.results[i].request);
-        }
-        
-      tableBody.push(
-      <tr key={answer.results[i].id}>
-        <td>
-         {answer.results[i].id}
-        </td>
-        <td>
-          {reqStack}
-        </td>
-        <td>
-         {answer.results[i].owner}
-        </td>
-      </tr>
-      )
+          <s>{answer.results[i].request}</s>);
+      } else {
+        reqStack.push(answer.results[i].request);
       }
+
+      tableBody.push(
+        <tr key={answer.results[i].id}>
+          <td>
+            {answer.results[i].id}
+          </td>
+          <td>
+            {reqStack}
+          </td>
+          <td>
+            {answer.results[i].owner}
+          </td>
+        </tr>
+      )
+    }
     return tableBody;
   }
 
@@ -129,11 +204,11 @@ class MyForm extends React.Component {
 
 
 
-  renderReqTable = async () => {
+  renderReqTable2 = async () => {
     var tableBody = await this.getReqPool();
     let res = []
     res.push(
-      <div> 
+      <div>
         <h1 id='title'>Request Table</h1>
         <Table size="sm" bordered='true' id='requestTable' condensed="true" >
           <tbody>
@@ -148,6 +223,12 @@ class MyForm extends React.Component {
       </div>
     )
     this.setState({ poolTable: res });
+    this.setState({ textbox: "request pool LOADED" });
+    this.updateChild({ loading: false });
+    this.setState({ loading: false });
+
+  
+    setTimeout(()=>{this.setState({ textbox: "" });},2000);
   }
 
 
@@ -226,21 +307,26 @@ class MyForm extends React.Component {
   render() {
     return (
       <div align="center">
+
         <form onSubmit={this.handleSubmit} >
+
+
 
           <h1>Ask for stuff</h1>
           <br />
-          <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} /> 
+
+          <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
+
           <br />
-          
+
           <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
-          <input type="text" id="name" name="fname" placeholder="your name" value={this.state.userbox}    onChange={this.handleChangeUB} />
-          <br/>
+          <input type="text" id="name" name="fname" placeholder="your name" value={this.state.userbox} onChange={this.handleChangeUB} />
+          <br />
           <label value=" "><b> EMAIL to update about your request : &nbsp;&nbsp; </b> </label>
-          <input type="text" id="mail" name="fmail" placeholder="@optional field" value={this.state.mailbox}    onChange={this.handleChangeMB} />
-          <br/>
-          
-          <br /><br />
+          <input type="text" id="mail" name="fmail" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
+          <br />
+
+          <div><AwesomeComponent /></div>
           <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}
           <Button variant="warning" onClick={this.renderReqTable} >request pool table</Button>
         </form>
