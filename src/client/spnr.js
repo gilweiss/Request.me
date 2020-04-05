@@ -30,7 +30,7 @@ export  class AwesomeComponent extends React.Component {
         <PacmanLoader
           css={override}
           sizeUnit={"px"}
-          size={25}
+          size={10}
           color={'#6D6D6D'}
           loading={this.state.loading}
         />
