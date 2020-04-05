@@ -192,6 +192,9 @@ class MyForm extends React.Component {
           <td>
             {answer.results[i].owner}
           </td>
+          <td>
+            {answer.results[i].date}
+          </td>
         </tr>
       )
     }
@@ -228,6 +231,7 @@ class MyForm extends React.Component {
               <th>ID</th>
               <th>Request</th>
               <th>Owner</th>
+              <th>Date</th>
             </tr>
             {tableBody}
           </tbody>

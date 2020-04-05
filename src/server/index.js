@@ -61,7 +61,8 @@ function createMainTable() {
         pool.query(
             'CREATE TABLE '+mainTableName+'(' +
             '    id SERIAL PRIMARY KEY,' +
-            '    request VARCHAR, done BOOLEAN DEFAULT false, owner VARCHAR, mail VARCHAR' +
+            '    request VARCHAR, done BOOLEAN DEFAULT false, owner VARCHAR, mail VARCHAR,'+
+            ' date VARCHAR DEFAULT TO_CHAR(CURRENT_DATE, \'DD/MM/YYYY\')' +
             ' );'
             , async (err, res) => {
             
@@ -122,7 +123,7 @@ async function createTableMgr() {
 app.get('/api/db', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query('SELECT id, request, done, owner FROM main_table ORDER BY id');
+      const result = await client.query('SELECT id, request, done, owner, date FROM main_table ORDER BY id');
       const results = { 'results': (result) ? result.rows : null};
       res.send(JSON.stringify(results));
       client.release();
@@ -211,12 +212,12 @@ app.get('/api/db', async (req, res) => {
          );
 
    
-    owner2 = row.rows[0].owner
-    adress2 = row.rows[0].mail
-    request2 = row.rows[0].request
-    
-      myMail.sendMail(adress2, req.params.id, owner2, request2  );
-      console.log("mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2);
+    owner2 = row.rows[0].owner;
+    adress2 = row.rows[0].mail;
+    request2 = row.rows[0].request;
+    date2 = row.rows[0].date;
+      myMail.sendMail(adress2, req.params.id, owner2, request2 ,date2 );
+      console.log("mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2 +" and date: " + date2);
       res.send("success! mail regarding request id:"+req.params.id +" was sent to: "+adress2);
     } catch (err) {
       console.error(err);

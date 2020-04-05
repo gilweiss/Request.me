@@ -10,22 +10,22 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-function createMailOptions(toAdress, id, owner, request){
+function createMailOptions(toAdress, id, owner, request, date){
 var mailOptions = {
   from: 'requestme.project.system@gmail.com',
   to: toAdress,
-  subject: 'Your request (id:'+id+') was fulfilled!',
-  text: 'Hello '+owner+' \nyour request (id:'+id+') was fulfilled: \n\"'+request+'\"'
+  subject: 'Your request (id:'+id+') from '+date+' was fulfilled!',
+  text: 'Hello '+owner+' \nyour request (id:'+id+') from '+date+' was fulfilled: \n\"'+request+'\"'
   
 };
 return mailOptions;
 }
 
 module.exports = {
-    sendMail: function (toAdress, id, owner, request){
+    sendMail: function (toAdress, id, owner, request, date){
 
 
-transporter.sendMail(createMailOptions(toAdress, id, owner, request), function(error, info){
+transporter.sendMail(createMailOptions(toAdress, id, owner, request, date), function(error, info){
   if (error) {
     console.log(error);
   } else {
