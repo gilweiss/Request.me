@@ -26,7 +26,7 @@ export  class AwesomeComponent extends React.Component {
     return (
       
       <div className='sweet-loading'>
-          <br/>
+       
         <PacmanLoader
           css={override}
           sizeUnit={"px"}
@@ -34,7 +34,7 @@ export  class AwesomeComponent extends React.Component {
           color={'#6D6D6D'}
           loading={this.state.loading}
         />
-        <br/><br/>
+       
       </div> 
     )
   }

@@ -63,12 +63,18 @@ class MyForm extends React.Component {
   }
 
   //wait 5 sec for DAWIN, then start real loading (should be complete by then though)
+  //ffs fix this strings to an array and make a function check it
   submitMainForm = () => {
+    if ( this.state.textbox=="request pool LOADED" ||
+    this.state.textbox=="L O A D I N G . . . . . . " ||
+    this.state.textbox=="S E N D I N G . . . . . . " || 
+    this.state.textbox=="" || 
+    this.state.textbox=="your request was successfully added to review pool :)") return;
     this.setState({ loading: true });
     this.updateChild({ loading: true });
     this.setState({ textboxToSend: this.state.textbox });
     this.setState({ textbox: "S E N D I N G . . . . . . " });
-    setTimeout(()=>{this.sendTextbox();},2000);
+    setTimeout(()=>{this.sendTextbox();},1500);
     
     
     //    setTimeout(this.loadingTextTimeFunc(this.state.loading,0,"loading...............", 5000), 100); 
@@ -139,8 +145,14 @@ class MyForm extends React.Component {
 
 
   renderReqTable =  () => {
+    if ( this.state.textbox=="request pool LOADED" ||
+    this.state.textbox=="L O A D I N G . . . . . . " ||
+    this.state.textbox=="S E N D I N G . . . . . . ") return;
+
+
     this.setState({ loading: true });
     this.updateChild({ loading: true });
+    this.setState({ textboxToSend: this.state.textbox });
     this.setState({ textbox: "L O A D I N G . . . . . . " });
     setTimeout(()=>{this.renderReqTable2();},1500);
   }
@@ -228,7 +240,12 @@ class MyForm extends React.Component {
     this.setState({ loading: false });
 
   
-    setTimeout(()=>{this.setState({ textbox: "" });},2000);
+    setTimeout(()=>{this.setState({ textbox: ( //add these strings to an array and make a function ffs
+      this.state.textboxToSend=="request pool LOADED" ||
+      this.state.textboxToSend=="L O A D I N G . . . . . . " ||
+      this.state.textboxToSend=="S E N D I N G . . . . . . " || 
+      this.state.textboxToSend=="your request was successfully added to review pool :)"
+      ? "" : this.state.textboxToSend ) });},1500);
   }
 
 
@@ -318,7 +335,6 @@ class MyForm extends React.Component {
           <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
 
           <br />
-
           <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
           <input type="text" id="name" name="fname" placeholder="your name" value={this.state.userbox} onChange={this.handleChangeUB} />
           <br />
@@ -326,7 +342,7 @@ class MyForm extends React.Component {
           <input type="text" id="mail" name="fmail" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
           <br />
 
-          <div><AwesomeComponent /></div>
+          <br /><AwesomeComponent /><br /> <br />
           <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}
           <Button variant="warning" onClick={this.renderReqTable} >request pool table</Button>
         </form>
