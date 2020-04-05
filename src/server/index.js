@@ -202,36 +202,22 @@ app.get('/api/db', async (req, res) => {
     console.log("request: "+req.params.id+" was marked \'done\'");
     
     
-    const adress = await client.query(
+    const row = await client.query(
 
-        // 'SELECT mail FROM '+ mainTableName+
-        // ' WHERE id = ($1)', [req.params.id],
-        //  error => {
-        //      if (error) {
-        //  throw error}}
 
-        'SELECT mail FROM '+ mainTableName+
+        'SELECT * FROM '+ mainTableName+
         ' WHERE id = ('+req.params.id+');'
          
          );
 
-    const request = await client.query(
-       'SELECT request FROM '+ mainTableName+
-       ' WHERE id = ('+req.params.id+');' );  
-
-
-       const owner = await client.query(
-           'SELECT owner FROM '+ mainTableName+
-           ' WHERE id = ('+req.params.id+');');  
-    owner2 = owner.rows[0].owner
-    adress2 = adress.rows[0].mail
-    request2 = request.rows[0].request
+   
+    owner2 = row.rows[0].owner
+    adress2 = row.rows[0].mail
+    request2 = row.rows[0].request
     
-        console.log(request2);
-      console.log("2mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2);
       myMail.sendMail(adress2, req.params.id, owner2, request2  );
       console.log("mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2);
-      res.send("success! mail was sent to: "+adress2);
+      res.send("success! mail regarding request id:"+req.params.id +" was sent to: "+adress2);
     } catch (err) {
       console.error(err);
       res.send("Error this" + err);
