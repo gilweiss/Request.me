@@ -23,10 +23,13 @@
     "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
     "express": "^4.16.3",
+    "mdbreact": "^4.25.5",
     "nodemailer": "^6.4.6",
     "pg": "^7.18.2",
     "react": "^16.5.2",
     "react-bootstrap": "^1.0.0",
+    "react-bootstrap-table-next": "^4.0.0",
+    "react-bootstrap-table2-paginator": "^2.1.2",
     "react-dom": "^16.5.2",
     "react-spinners": "^0.8.1",
     "sqlite3": "^4.1.1"

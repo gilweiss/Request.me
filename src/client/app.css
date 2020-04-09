@@ -1,5 +1,5 @@
 h1 {
-  color: green;
+  color: goldenrod;
 }
 
 body {
@@ -10,6 +10,18 @@ body {
 div.test1 {
   
   margin: auto;
-  border: 3px solid #73AD21;
+  border: 3px solid rgb(111, 176, 214);
   
 }
+
+.table.table thead th {
+  background-color: #c3d8db;
+}
+
+.undoneReq {background-color:rgb(255, 255, 255);}
+
+.doneReq {
+  background-color: #eaf1ea;
+}
+
+.react-bootstrap-table table { table-layout: auto !important; }
