@@ -313,6 +313,9 @@ class MyForm extends React.Component {
     }, {
       dataField: 'request',
       text: 'Request',
+      headerStyle: (colum, colIndex) => {
+        return { width: '5000px', textAlign: 'center' };
+      },
       formatter: (status, row) => {
         return (
           <div >
@@ -541,7 +544,7 @@ class MyForm extends React.Component {
 
           <br />
           <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
-          <input type="text" id="name" name="name" placeholder="your name" value={this.state.userbox} onChange={this.handleChangeUB} />
+          <input type="text" id="name" name="name" placeholder="your name" maxLength="8" value={this.state.userbox} onChange={this.handleChangeUB} />
           <br />
           <label value=" "><b> EMAIL to update about your request : &nbsp;&nbsp; </b> </label>
           <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
@@ -549,9 +552,9 @@ class MyForm extends React.Component {
           
           <br />
           <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br/><br/><AwesomeComponent /><br />
-          <Button variant={this.state.allTable} onClick={this.renderReqTableAll} >Pool table</Button> &nbsp;
-          <Button variant={this.state.doneTable} onClick={this.renderReqTableDone} >COMPLETED requests</Button> &nbsp;
-          <Button variant={this.state.todoTable} onClick={this.renderReqTableTodo} >TODO requests</Button>
+          <Button size="sm"variant={this.state.allTable} onClick={this.renderReqTableAll} >Request pool</Button> &nbsp;
+          <Button size="sm" variant={this.state.doneTable} onClick={this.renderReqTableDone} >COMPLETED</Button> &nbsp;
+          <Button size="sm" variant={this.state.todoTable} onClick={this.renderReqTableTodo} >TODO</Button>
         </form>
         <br /> <br />
         {this.state.poolTable}
