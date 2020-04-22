@@ -8,7 +8,7 @@ const myMail = require('./myMail');
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: !process.env.DATABASE_URL.includes("localhost")  //in dev mode we bypass ssl (=false)
+  ssl: !String(process.env.DATABASE_URL).includes("localhost")  //in dev mode we bypass ssl (=false)
 });
 
 const mainTableName = "main_table";

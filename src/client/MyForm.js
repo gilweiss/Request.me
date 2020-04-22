@@ -314,7 +314,7 @@ class MyForm extends React.Component {
       dataField: 'request',
       text: 'Request',
       headerStyle: (colum, colIndex) => {
-        return { width: '5000px', textAlign: 'center' };
+        return { width: '2000px', textAlign: 'center' };
       },
       formatter: (status, row) => {
         return (
