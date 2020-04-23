@@ -71,8 +71,36 @@ class MyForm extends React.Component {
 
   }
 
+
+
+  googleSDK() {
+ 
+    window['googleSDKLoaded'] = () => {
+      window['gapi'].load('auth2', () => {
+        this.auth2 = window['gapi'].auth2.init({
+          client_id: '765105250063-0rtg2noaagpp7tfsteeiv1noibs70vkd.apps.googleusercontent.com',
+          cookiepolicy: 'single_host_origin',
+          scope: 'profile email'
+        });
+        this.prepareLoginButton();
+      });
+    }
+   
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://apis.google.com/js/platform.js?onload=googleSDKLoaded";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'google-jssdk'));
+   
+  }
+
+
+
+
   //wait 5 sec for DAWIN, then start real loading (should be complete by then though)
-  //ffs fix this strings to an array and make a function check it
+  //ffs fix this strings to an array and make a function to check it
   submitMainForm = () => {
     if (this.state.textbox == "request pool LOADED" ||
       this.state.textbox == "L O A D I N G . . . . . . " ||
@@ -174,14 +202,37 @@ class MyForm extends React.Component {
       });
   }
 
-
+  prepareLoginButton = () => {
+ 
+    console.log(this.refs.googleLoginBtn);
+     
+    this.auth2.attachClickHandler(this.refs.googleLoginBtn, {},
+        (googleUser) => {
+     
+        let profile = googleUser.getBasicProfile();
+        console.log('Token || ' + googleUser.getAuthResponse().id_token);
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+        this.setState({ userbox: profile.getGivenName().substring(0,7) });
+        this.setState({ mailbox: profile.getEmail() });
+        //YOUR CODE HERE
+     
+     
+        }, (error) => {
+        console.log("error with google login: "+ JSON.stringify(error, undefined, 2));
+        });
+     
+    }
 
   //here is some ugly code until i get the serenity to learn how to do it properly:
 
   componentDidMount(){
 
+    this.googleSDK();
     this.renderReqTableAll();
-
+    
 
   }
 
@@ -531,6 +582,11 @@ class MyForm extends React.Component {
 
   render() {
     return (
+      <div>
+        <button className="loginBtn loginBtn--google" ref="googleLoginBtn">
+                                        Login with Google
+                                    </button>
+      
       <div align="center">
 
         <form onSubmit={this.handleSubmit} >
@@ -538,7 +594,9 @@ class MyForm extends React.Component {
 
 
           <h1>Ask for stuff</h1>
-          <br />
+         
+
+           <br />
 
           <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
 
@@ -548,19 +606,22 @@ class MyForm extends React.Component {
           <br />
           <label value=" "><b> EMAIL to update about your request : &nbsp;&nbsp; </b> </label>
           <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
-          <br />
+          <br /><br />
           
-          <br />
+          
+          
           <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br/><br/><AwesomeComponent /><br />
+          
           <Button size="sm"variant={this.state.allTable} onClick={this.renderReqTableAll} >Request pool</Button> &nbsp;
           <Button size="sm" variant={this.state.doneTable} onClick={this.renderReqTableDone} >COMPLETED</Button> &nbsp;
           <Button size="sm" variant={this.state.todoTable} onClick={this.renderReqTableTodo} >TODO</Button>
         </form>
-        <br /> <br />
+        <br /> 
         {this.state.poolTable}
         <br /> <br /><br /> <br />
 
         <p id="hidden button, you can also copy paste the suffix" hidden onClick={() => this.getStoredRequests()} >/api/getRequests</p>
+      </div>
       </div>
     );
   }
