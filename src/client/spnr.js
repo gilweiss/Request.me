@@ -10,21 +10,17 @@ const override = css`
     border-color: black;
 `;
 
-export function updateStateLDR(text){
-    this.setState(text);
-}
 
 export  class AwesomeComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false
-    }
-    updateStateLDR = updateStateLDR.bind(this);
+
+  //  updateStateLDR = updateStateLDR.bind(this);  //was previously used for component communication
   }
+
   render() {
     return (
-      
+
       <div className='sweet-loading'>
        
         <PacmanLoader
@@ -32,7 +28,7 @@ export  class AwesomeComponent extends React.Component {
           sizeUnit={"px"}
           size={10}
           color={'#6D6D6D'}
-          loading={this.state.loading}
+          loading={this.props.loading}
         />
        
       </div> 
