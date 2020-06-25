@@ -20,6 +20,7 @@ export  class AwesomeComponent extends React.Component {
 
   render() {
     return (
+
       <div className='sweet-loading'>
        
         <PacmanLoader
