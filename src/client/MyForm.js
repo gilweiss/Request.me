@@ -38,6 +38,7 @@ class MyForm extends React.Component {
 
   }
 
+
   handleChangeTB(event) {
     this.setState({ textbox: event.target.value });
   }
@@ -57,8 +58,10 @@ class MyForm extends React.Component {
 
   }
 
+
   
   googleSDK() {
+
 
     window['googleSDKLoaded'] = () => {
       window['gapi'].load('auth2', () => {
@@ -71,6 +74,7 @@ class MyForm extends React.Component {
       });
     }
 
+
     (function (d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) { return; }
@@ -78,8 +82,8 @@ class MyForm extends React.Component {
       js.src = "https://apis.google.com/js/platform.js?onload=googleSDKLoaded";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'google-jssdk'));
-
   }
+
 
 
 
@@ -103,10 +107,12 @@ isTextBoxOccupied = () =>{
 
 
 
+
     //    setTimeout(this.loadingTextTimeFunc(this.state.loading,0,"loading...............", 5000), 100); 
 
   }
   ////
+
 
 
 
@@ -130,6 +136,7 @@ isTextBoxOccupied = () =>{
   }
 
   //    setTimeout(this.loadingTextTimeFunc(this.state.loading,0,"loading...............", 5000), 100); 
+
 
 
   //  loadingTextTimeFunc =  (isWaiting, i, loadingTextString, minimumTimeLim) => {
@@ -170,6 +177,7 @@ isTextBoxOccupied = () =>{
     )
       .then((response) => {
         console.log(response.data.message);
+
         this.setState({ loading: false });
         this.setState({ textbox: response.data.message });
         this.setState({ userbox: "" });
@@ -178,6 +186,7 @@ isTextBoxOccupied = () =>{
 
       }, (error) => {
         this.setState({ textbox: "" });
+
         this.setState({ loading: false });
         this.setState({ userbox: "" });
         this.setState({ mailbox: "" });
@@ -188,10 +197,12 @@ isTextBoxOccupied = () =>{
 
   prepareLoginButton = () => {
 
+
     console.log(this.refs.googleLoginBtn);
 
     this.auth2.attachClickHandler(this.refs.googleLoginBtn, {},
       (googleUser) => {
+
 
         let profile = googleUser.getBasicProfile();
         console.log('Token || ' + googleUser.getAuthResponse().id_token);
@@ -199,6 +210,7 @@ isTextBoxOccupied = () =>{
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail());
+
         this.setState({ userbox: profile.getGivenName().substring(0, 7) });
         this.setState({ mailbox: profile.getEmail() });
         //YOUR CODE HERE
@@ -221,6 +233,7 @@ isTextBoxOccupied = () =>{
   }
 
   changeActiveButton(option) {
+
     this.setState({ allTable: (option == "all" ? "success" : "secondary") });
     this.setState({ doneTable: (option == "done" ? "success" : "secondary") });
     this.setState({ todoTable: (option == "todo" ? "success" : "secondary") });
@@ -245,6 +258,7 @@ isTextBoxOccupied = () =>{
 
 
 
+
     this.setState({ loading: true });
     this.setState({ textboxToSend: this.state.textbox });
     this.setState({ textbox: "L O A D I N G . . . . . . " });
@@ -256,9 +270,11 @@ isTextBoxOccupied = () =>{
 
 
 
+
   
     var answer = await this.getReqPool2();
   
+
     return answer;
   }
 
@@ -276,10 +292,12 @@ isTextBoxOccupied = () =>{
     });
   }
 
+
   addKey = (obj) => {
     var i;
     for (i = 0; i < obj.length; i++) {
       obj[i].key = i;
+
     }
   }
 
@@ -303,11 +321,13 @@ isTextBoxOccupied = () =>{
 
 
 
+
     var columns = [{
       dataField: 'id',
       text: 'ID',
       sort: true,
       isKey: true
+
     }, {
       dataField: 'request',
       text: 'Request',
@@ -329,6 +349,7 @@ isTextBoxOccupied = () =>{
           </div>
         )
       }
+
     }, {
       dataField: 'owner',
       text: 'Owner',
@@ -351,6 +372,7 @@ isTextBoxOccupied = () =>{
       this.setState({
         textbox: ( //add these strings to an array and make a function ffs
           this.state.textboxToSend == "request pool LOADED" ||
+
             this.state.textboxToSend == "request pool LOADED with COMPLETED filter" ||
             this.state.textboxToSend == "request pool LOADED with TODO filter" ||
             this.state.textboxToSend == "L O A D I N G . . . . . . " ||
@@ -368,9 +390,6 @@ isTextBoxOccupied = () =>{
 
     var rowClasses = row => (rows[row.key].done ? "doneReq"
       : "undoneReq");
-
-
-
 
     const options = {
       paginationSize: 4,
@@ -398,11 +417,6 @@ isTextBoxOccupied = () =>{
         text: 'Show all', value: rows.length
       }] // A numeric array is also available. the purpose of above example is custom the text
     };
-
-
-
-
-
     return (
 
       <BootstrapTable
