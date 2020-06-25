@@ -13,6 +13,7 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 
 //test 
 //vc another test
+//vc another test 2
 
 class MyForm extends React.Component {
   constructor(props) {
