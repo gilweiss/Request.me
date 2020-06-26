@@ -4,6 +4,7 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { AwesomeComponent } from './spnr';
+import { FilterButtons } from './filterButtons';
 // import { updateStateLDR } from './spnr';  //was previously used for component communication
 import { MDBDataTable } from 'mdbreact';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -11,9 +12,6 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
-//test 
-//vc another test
-//vc another test 2
 
 class MyForm extends React.Component {
   constructor(props) {
@@ -35,8 +33,7 @@ class MyForm extends React.Component {
     this.handleChangeTB = this.handleChangeTB.bind(this);
     this.handleChangeUB = this.handleChangeUB.bind(this);
     this.handleChangeMB = this.handleChangeMB.bind(this);
-
-    //this.loader2 = new AwesomeComponent().render.bind(this);
+    this.renderReqTable = this.renderReqTable.bind(this);
 
   }
 
@@ -61,7 +58,7 @@ class MyForm extends React.Component {
   }
 
 
-  
+
   googleSDK() {
 
 
@@ -89,40 +86,37 @@ class MyForm extends React.Component {
 
 
 
-isTextBoxOccupied = () =>{
-  console.log('test');
-  return (this.state.textbox == "request pool LOADED" ||
+  isTextBoxOccupied = () => {
+    console.log('test');
+    return (this.state.textbox == "request pool LOADED" ||
       this.state.textbox == "L O A D I N G . . . . . . " ||
       this.state.textbox == "S E N D I N G . . . . . . " ||
       this.state.textbox == "" ||
+      this.state.textbox == "request pool LOADED with COMPLETED filter" ||
+      this.state.textbox == "request pool LOADED with TODO filter" ||
       this.state.textbox == "your request was successfully added to review pool :)");
-}
+  }
 
   //wait some time for loading DAWIN, then start real loading (should be complete by then though)
   submitMainForm = () => {
-    if (this.isTextBoxOccupied()) return;
+    if (this.isTextBoxOccupied() || this.state.loading == true) return;
     this.setState({ loading: true });
     this.setState({ textboxToSend: this.state.textbox });
     this.setState({ textbox: "S E N D I N G . . . . . . " });
     setTimeout(() => { this.sendTextbox(); }, 1500);
     setTimeout(this.waitForSub(true, 0, 3000, 200), 200);
 
-
-
-
-    //    setTimeout(this.loadingTextTimeFunc(this.state.loading,0,"loading...............", 5000), 100); 
-
   }
-  ////
 
 
 
-
+  //awaits until the loading process is complete to render the request table
+  //TODO this may seem broken or modified from a previouse version, fix it!
   waitForSub = (isWaiting, time, maxTimeLim, interval) => {
 
     return () => {
       if (!isWaiting) {
-        this.renderReqTableAll();
+        this.renderReqTable("all");
         return;
       }
       if (maxTimeLim <= time) { return }
@@ -136,38 +130,6 @@ isTextBoxOccupied = () =>{
     }
 
   }
-
-  //    setTimeout(this.loadingTextTimeFunc(this.state.loading,0,"loading...............", 5000), 100); 
-
-
-
-  //  loadingTextTimeFunc =  (isWaiting, i, loadingTextString, minimumTimeLim) => {
-
-  //   return () => {
-  //       if (!isWaiting && minimumTimeLim<=0) {
-  //         this.setState({textbox: loadingTextString});
-  //         return;
-  //       }
-  //       minimumTimeLim -= 100;
-  //       var textString = loadingTextString.slice(0, i) +'_'+ loadingTextString.slice(i+1, loadingTextString.length)
-  //       this.setState({textbox: textString});
-  //       if (i<loadingTextString.length){
-  //         i++
-  //       }
-  //       else{
-  //         i=0;
-  //       }
-
-  //       if(this.state.loading == false) {
-  //         isWaiting = false;
-  //       }
-
-  //       setTimeout(this.loadingTextTimeFunc(isWaiting, i, loadingTextString, minimumTimeLim), 100); 
-
-  //   }   
-
-  // }
-
 
 
   sendTextbox() {
@@ -212,10 +174,8 @@ isTextBoxOccupied = () =>{
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail());
-
         this.setState({ userbox: profile.getGivenName().substring(0, 7) });
         this.setState({ mailbox: profile.getEmail() });
-        //YOUR CODE HERE
 
 
       }, (error) => {
@@ -224,41 +184,15 @@ isTextBoxOccupied = () =>{
 
   }
 
-  //here is some ugly code until i get the serenity to learn how to do it properly:
 
   componentDidMount() {
 
     this.googleSDK();
-    this.renderReqTableAll();
-
-
-  }
-
-  changeActiveButton(option) {
-
-    this.setState({ allTable: (option == "all" ? "success" : "secondary") });
-    this.setState({ doneTable: (option == "done" ? "success" : "secondary") });
-    this.setState({ todoTable: (option == "todo" ? "success" : "secondary") });
-  }
-
-  renderReqTableAll = () => {
-    this.changeActiveButton("all");
     this.renderReqTable("all");
   }
 
-  renderReqTableDone = () => {
-    this.changeActiveButton("done");
-    this.renderReqTable("done");
-  }
-
-  renderReqTableTodo = () => {
-    this.changeActiveButton("todo");
-    this.renderReqTable("todo");
-  }
 
   renderReqTable = async (option) => {
-
-
 
 
     this.setState({ loading: true });
@@ -270,13 +204,7 @@ isTextBoxOccupied = () =>{
 
   getReqPool = async () => {
 
-
-
-
-  
     var answer = await this.getReqPool2();
-  
-
     return answer;
   }
 
@@ -363,7 +291,6 @@ isTextBoxOccupied = () =>{
     ];
 
 
-    //this.setState({ tableData : rows }); 
     console.log(rows);
     const CaptionElement = () => <h3 style={{ textAlign: 'center', color: 'black' }}>Request Pool</h3>;
     this.setState({ textbox: "request pool LOADED" + (option == "done" ? " with COMPLETED filter" : "") + (option == "todo" ? " with TODO filter" : "") });
@@ -372,15 +299,8 @@ isTextBoxOccupied = () =>{
 
     setTimeout(() => {
       this.setState({
-        textbox: ( //add these strings to an array and make a function ffs
-          this.state.textboxToSend == "request pool LOADED" ||
-
-            this.state.textboxToSend == "request pool LOADED with COMPLETED filter" ||
-            this.state.textboxToSend == "request pool LOADED with TODO filter" ||
-            this.state.textboxToSend == "L O A D I N G . . . . . . " ||
-            this.state.textboxToSend == "S E N D I N G . . . . . . " ||
-            this.state.textboxToSend == "your request was successfully added to review pool :)"
-            ? "" : this.state.textboxToSend)
+        textbox: (this.isTextBoxOccupied()
+          ? "" : this.state.textboxToSend)
       });
     }, 1500);
 
@@ -466,11 +386,10 @@ isTextBoxOccupied = () =>{
 
 
 
-            <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br /><br /><AwesomeComponent loading={this.state.loading}/><br />
+            <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br /><br /><AwesomeComponent loading={this.state.loading} /><br />
 
-            <Button size="sm" variant={this.state.allTable} onClick={this.renderReqTableAll} >Request pool</Button> &nbsp;
-          <Button size="sm" variant={this.state.doneTable} onClick={this.renderReqTableDone} >COMPLETED</Button> &nbsp;
-          <Button size="sm" variant={this.state.todoTable} onClick={this.renderReqTableTodo} >TODO</Button>
+            <FilterButtons renderfunction={this.renderReqTable} />
+
           </form>
           <br />
           {this.state.poolTable}
@@ -485,67 +404,3 @@ isTextBoxOccupied = () =>{
 
 export default MyForm;
 
-
-
-
-
-
-
-
-
-
-
-
-
-// export default class App extends Component {
-
-//   constructor() {
-//     super()
-//     this.state = {
-//       username: `BITCH`,
-//       page: 0
-//     }
-//   }
-
-//   async setUsername() {
-//       const response = await fetch('/api/getUsername');
-//       const userData = await response.json();
-//       setTimeout(() => {
-//         this.setState({username: userData.username, page: 1});
-//       }, 2000)
-//   }
-
-//   componentDidMount() {
-//     this.setUsername();
-//     // const usernamePromise = fetch('/api/getUsername');
-//     // usernamePromise.then((response) => response.json()).then((data) => console.log(data));
-
-//     // const getPersonPromise = new Promise((resolve, reject) => {
-//     //   setTimeout(() => {
-//     //     const myObject = { name: "sgil", surname: "weiss" }
-//     //     if (myObject.name === 'gil') {
-//     //       reject()
-//     //     }
-//     //     else {
-//     //       resolve(myObject)
-//     //     }
-//     //   }, 2000);
-//     // });
-//     // getPersonPromise.then((person) => console.log(person)).catch(() => console.log('rejected!'));
-//   }
-
-//   render() {
-//       return this.state.page === 1 ? (
-//       <div>
-//     <h1>Hello {this.state.username}!</h1>
-//       < img src = { Hardon } alt = "mordehai" width = "500" />
-//       </div >
-//     ) : (<div>
-//       <h1>
-//         LOADING
-//       </h1>
-//     </div>);
-//   }
-
-
-// }
