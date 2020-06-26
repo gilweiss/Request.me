@@ -70,7 +70,18 @@ div.test1 {
   background: rgb(148, 150, 163);
 }
 
+.right-float {
+float: right;
+margin: auto;
+width: 160px;
+height: 40px;
+margin-right: 5px;
+margin-top: 5px;
+}
 
-
+.google-auth-button-div {
+margin-left: 5px;
+margin-top: 5px;
+}
 
 .react-bootstrap-table table { table-layout: auto !important; }

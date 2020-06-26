@@ -12,6 +12,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import logo from './res/logo.png';
 
 
 class MyForm extends React.Component {
@@ -25,9 +26,6 @@ class MyForm extends React.Component {
       userbox: '',
       loading: false,
       textboxToSend: '',
-      allTable: 'success',
-      doneTable: 'secondary',
-      todoTable: 'secondary',
       tableData: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -36,7 +34,7 @@ class MyForm extends React.Component {
     this.handleChangeMB = this.handleChangeMB.bind(this);
     this.renderReqTable = this.renderReqTable.bind(this);
     this.setGoogleFields = this.setGoogleFields.bind(this);
-    
+
   }
 
 
@@ -132,16 +130,14 @@ class MyForm extends React.Component {
       });
   }
 
-//string: user name, string: mail address
+  //string: user name, string: mail address
   setGoogleFields = (userName, mailAddress) => {
-    this.setState({ userbox: userName});
-    this.setState({ mailbox: mailAddress});
+    this.setState({ userbox: userName });
+    this.setState({ mailbox: mailAddress });
   }
 
 
   componentDidMount() {
-
-   // this.googleSDK();
     this.renderReqTable("all");
   }
 
@@ -313,7 +309,11 @@ class MyForm extends React.Component {
   render() {
     return (
       <div>
-        <GoogleLogin fillBoxesFunction={this.setGoogleFields} />
+        <img src={logo} class="right-float" alt="legacy logo" ></img>
+        <div class="google-auth-button-div">
+          <GoogleLogin fillBoxesFunction={this.setGoogleFields} />
+        </div>
+
         <div align="center">
 
           <form onSubmit={this.handleSubmit} >
