@@ -1,5 +1,4 @@
 import React from 'react';
-import { css } from '@emotion/core';
 import Button from 'react-bootstrap/Button';
 
 // button type, active, changing state function

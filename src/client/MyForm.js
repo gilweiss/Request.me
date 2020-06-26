@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { AwesomeComponent } from './spnr';
 import { FilterButtons } from './filterButtons';
+import { GoogleLogin } from './googleLogin';
 // import { updateStateLDR } from './spnr';  //was previously used for component communication
 import { MDBDataTable } from 'mdbreact';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -12,7 +13,6 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
-//last commit separated buttons(and logic) to another component as things should be
 
 class MyForm extends React.Component {
   constructor(props) {
@@ -35,7 +35,8 @@ class MyForm extends React.Component {
     this.handleChangeUB = this.handleChangeUB.bind(this);
     this.handleChangeMB = this.handleChangeMB.bind(this);
     this.renderReqTable = this.renderReqTable.bind(this);
-
+    this.setGoogleFields = this.setGoogleFields.bind(this);
+    
   }
 
 
@@ -57,35 +58,6 @@ class MyForm extends React.Component {
     this.setState({ requestSent: "false" });
 
   }
-
-
-
-  googleSDK() {
-
-
-    window['googleSDKLoaded'] = () => {
-      window['gapi'].load('auth2', () => {
-        this.auth2 = window['gapi'].auth2.init({
-          client_id: '765105250063-0rtg2noaagpp7tfsteeiv1noibs70vkd.apps.googleusercontent.com',
-          cookiepolicy: 'single_host_origin',
-          scope: 'profile email'
-        });
-        this.prepareLoginButton();
-      });
-    }
-
-
-    (function (d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) { return; }
-      js = d.createElement(s); js.id = id;
-      js.src = "https://apis.google.com/js/platform.js?onload=googleSDKLoaded";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'google-jssdk'));
-  }
-
-
-
 
   isTextBoxOccupied = () => {
     console.log('test');
@@ -160,35 +132,16 @@ class MyForm extends React.Component {
       });
   }
 
-  prepareLoginButton = () => {
-
-
-    console.log(this.refs.googleLoginBtn);
-
-    this.auth2.attachClickHandler(this.refs.googleLoginBtn, {},
-      (googleUser) => {
-
-
-        let profile = googleUser.getBasicProfile();
-        console.log('Token || ' + googleUser.getAuthResponse().id_token);
-        console.log('ID: ' + profile.getId());
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail());
-        this.setState({ userbox: profile.getGivenName().substring(0, 7) });
-        this.setState({ mailbox: profile.getEmail() });
-
-
-      }, (error) => {
-        console.log("error with google login: " + JSON.stringify(error, undefined, 2));
-      });
-
+//string: user name, string: mail address
+  setGoogleFields = (userName, mailAddress) => {
+    this.setState({ userbox: userName});
+    this.setState({ mailbox: mailAddress});
   }
 
 
   componentDidMount() {
 
-    this.googleSDK();
+   // this.googleSDK();
     this.renderReqTable("all");
   }
 
@@ -360,10 +313,7 @@ class MyForm extends React.Component {
   render() {
     return (
       <div>
-        <button className="loginBtn loginBtn--google" ref="googleLoginBtn">
-          Login with Google
-                                    </button>
-
+        <GoogleLogin fillBoxesFunction={this.setGoogleFields} />
         <div align="center">
 
           <form onSubmit={this.handleSubmit} >
@@ -395,8 +345,6 @@ class MyForm extends React.Component {
           <br />
           {this.state.poolTable}
           <br /> <br /><br /> <br />
-
-          <p id="hidden button, you can also copy paste the suffix" hidden onClick={() => this.getStoredRequests()} >/api/getRequests</p>
         </div>
       </div>
     );
