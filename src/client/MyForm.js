@@ -7,12 +7,8 @@ import { AwesomeComponent } from './spnr';
 import { FilterButtons } from './filterButtons';
 import { GoogleLogin } from './googleLogin';
 // import { updateStateLDR } from './spnr';  //was previously used for component communication
-import { MDBDataTable } from 'mdbreact';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import logo from './res/logo.png';
+import { RequestTable } from './requestTable';
 
 
 class MyForm extends React.Component {
@@ -26,15 +22,16 @@ class MyForm extends React.Component {
       userbox: '',
       loading: false,
       textboxToSend: '',
-      tableData: ''
+      tableData: '',
+      loadReqTableTrigger: 'false',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeTB = this.handleChangeTB.bind(this);
     this.handleChangeUB = this.handleChangeUB.bind(this);
     this.handleChangeMB = this.handleChangeMB.bind(this);
-    this.renderReqTable = this.renderReqTable.bind(this);
     this.setGoogleFields = this.setGoogleFields.bind(this);
-
+    this.textBoxLoad = this.textBoxLoad.bind(this);
+    this.textBoxLoaded = this.textBoxLoaded.bind(this);
   }
 
 
@@ -57,8 +54,29 @@ class MyForm extends React.Component {
 
   }
 
+
+  textBoxLoad = () => {
+
+    this.setState({ loading: true });
+    this.setState({ textboxToSend: this.state.textbox });
+    this.setState({ textbox: "L O A D I N G . . . . . . " });
+  }
+
+  textBoxLoaded = (option) => {
+  this.setState({ textbox: "request pool LOADED" + (option == "done" ? " with COMPLETED filter" : "") + (option == "todo" ? " with TODO filter" : "") });
+    this.setState({ loading: false });
+
+
+    setTimeout(() => {
+      this.setState({
+        textbox: (this.isTextBoxOccupied()
+          ? "" : this.state.textboxToSend)
+      });
+    }, 1500);
+
+  }
+
   isTextBoxOccupied = () => {
-    console.log('test');
     return (this.state.textbox == "request pool LOADED" ||
       this.state.textbox == "L O A D I N G . . . . . . " ||
       this.state.textbox == "S E N D I N G . . . . . . " ||
@@ -87,7 +105,7 @@ class MyForm extends React.Component {
 
     return () => {
       if (!isWaiting) {
-        this.renderReqTable("all");
+        this.ReRenderReqTable();
         return;
       }
       if (maxTimeLim <= time) { return }
@@ -138,172 +156,12 @@ class MyForm extends React.Component {
 
 
   componentDidMount() {
-    this.renderReqTable("all");
   }
 
 
-  renderReqTable = async (option) => {
-
-
-    this.setState({ loading: true });
-    this.setState({ textboxToSend: this.state.textbox });
-    this.setState({ textbox: "L O A D I N G . . . . . . " });
-    var myTable = await this.DatatablePage(option);
-    this.setState({ poolTable: myTable })
+  ReRenderReqTable = () => {
+    this.setState({ loadReqTableTrigger: (this.state.loadReqTableTrigger === true ? false : true)}); //changes trigger state
   }
-
-  getReqPool = async () => {
-
-    var answer = await this.getReqPool2();
-    return answer;
-  }
-
-  getReqPool2 = () => {
-
-    console.log('asking server for stored requests')
-    return new Promise(function (resolve, reject) {
-      axios.get('/api/db')
-        .then((response) => {
-          console.log("response from server: " + response.data);
-          resolve(response.data);
-        }, (error) => {
-          console.log(error);
-        });
-    });
-  }
-
-
-  addKey = (obj) => {
-    var i;
-    for (i = 0; i < obj.length; i++) {
-      obj[i].key = i;
-
-    }
-  }
-
-
-  DatatablePage = async (option) => {
-
-    var rows
-    if (option == "all") {
-      const tRows = await this.getReqPool();
-      rows = tRows.results;
-      this.addKey(rows);
-      this.setState({ tableData: rows });
-    }
-    if (option == "todo") {
-      rows = this.state.tableData.filter(request => !request.done)
-    }
-    if (option == "done") {
-      rows = this.state.tableData.filter(request => request.done)
-    }
-    this.addKey(rows);
-
-
-
-
-    var columns = [{
-      dataField: 'id',
-      text: 'ID',
-      sort: true,
-      isKey: true
-
-    }, {
-      dataField: 'request',
-      text: 'Request',
-      headerStyle: (colum, colIndex) => {
-        return { width: '2000px', textAlign: 'center' };
-      },
-      formatter: (status, row) => {
-        return (
-          <div >
-            <span>
-              {rows[row.key].done && (
-                <s>{status} </s>
-              )}
-
-              {!rows[row.key].done && (
-                <span>{status}</span>
-              )}
-            </span>
-          </div>
-        )
-      }
-
-    }, {
-      dataField: 'owner',
-      text: 'Owner',
-      sort: true
-    }, {
-      dataField: 'date',
-      text: 'Date'
-    }
-    ];
-
-
-    console.log(rows);
-    const CaptionElement = () => <h3 style={{ textAlign: 'center', color: 'black' }}>Request Pool</h3>;
-    this.setState({ textbox: "request pool LOADED" + (option == "done" ? " with COMPLETED filter" : "") + (option == "todo" ? " with TODO filter" : "") });
-    this.setState({ loading: false });
-
-
-    setTimeout(() => {
-      this.setState({
-        textbox: (this.isTextBoxOccupied()
-          ? "" : this.state.textboxToSend)
-      });
-    }, 1500);
-
-    const customTotal = (from, to, size) => (
-      <span className="react-bootstrap-table-pagination-total">
-        &nbsp;&nbsp;Showing requests { from} to { to} out of { size}
-      </span>
-    );
-
-    var rowClasses = row => (rows[row.key].done ? "doneReq"
-      : "undoneReq");
-
-    const options = {
-      paginationSize: 4,
-      pageStartIndex: 0,
-      // alwaysShowAllBtns: true, // Always show next and previous button
-      // withFirstAndLast: false, // Hide the going to First and Last page button
-      // hideSizePerPage: true, // Hide the sizePerPage dropdown always
-      // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
-      firstPageText: 'First',
-      prePageText: 'Back',
-      nextPageText: 'Next',
-      lastPageText: 'Last',
-      nextPageTitle: 'First page',
-      prePageTitle: 'Pre page',
-      firstPageTitle: 'Next page',
-      lastPageTitle: 'Last page',
-      paginationTotalRenderer: customTotal,
-      showTotal: true,
-      disablePageTitle: true,
-      sizePerPageList: [{
-        text: '20 per page', value: 40
-      }, {
-        text: '50 per page', value: 80
-      }, {
-        text: 'Show all', value: rows.length
-      }] // A numeric array is also available. the purpose of above example is custom the text
-    };
-    return (
-
-      <BootstrapTable
-        bootstrap4
-        keyField="id"
-        data={rows}
-        columns={columns}
-        condensed
-        //pagination={ paginationFactory(options) } //when pagination will be needed
-        caption={<CaptionElement />}
-        rowClasses={rowClasses}
-      />
-    );
-  }
-
 
 
   render() {
@@ -339,11 +197,10 @@ class MyForm extends React.Component {
 
             <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br /><br /><AwesomeComponent loading={this.state.loading} /><br />
 
-            <FilterButtons renderfunction={this.renderReqTable} />
+          
 
           </form>
-          <br />
-          {this.state.poolTable}
+          <RequestTable reload={this.state.loadReqTableTrigger} load={this.textBoxLoad} loaded={this.textBoxLoaded} />
           <br /> <br /><br /> <br />
         </div>
       </div>
