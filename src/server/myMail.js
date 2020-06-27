@@ -6,7 +6,7 @@ var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'requestme.project.system',
-    pass: 'pleasedontstealthisacc1' //i know this is unsecure, but come on- let me have some shortcuts and please dont steal it :) 
+    pass: 'pleasedontstealthisacc2' //i know this is unsecure, but come on- let me have some shortcuts and please dont steal it :) 
   }
 });
 
