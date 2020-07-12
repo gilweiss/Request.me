@@ -75,9 +75,16 @@ export class CommentsShell extends React.Component {
                }
 
 
-                setTimeout(() => resolve("done!"), 200); //BAD coding, but i wanna relaese an update already
-                await this.loadComments(this.props.id);
+              //BAD coding, but i wanna relaese an update already
+               setTimeout(() => { 
+                  this.loadComments(this.props.id);
                 this.props.refreshReqTable("same");
+               }, 500);
+                  
+                
+                
+           
+                
 
             }
           }}
