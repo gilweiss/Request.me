@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 const mainTableName = "main_table";
-
+const commentTableName = "comment_table"
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -27,7 +27,7 @@ function createMainTable() {
             'CREATE TABLE '+mainTableName+'(' +
             '    id SERIAL PRIMARY KEY,' +
             '    request VARCHAR, done BOOLEAN DEFAULT false, owner VARCHAR, mail VARCHAR,'+
-            ' date VARCHAR DEFAULT TO_CHAR(CURRENT_DATE, \'DD/MM/YYYY\')' +
+            ' date VARCHAR DEFAULT TO_CHAR(CURRENT_DATE, \'DD/MM/YYYY\'), comment_sum INTEGER DEFAULT 0' +
             ' );'
             , async (err, res) => {
             
@@ -87,7 +87,7 @@ async function createTableMgr() {
 app.get('/api/db', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query('SELECT id, request, done, owner, date FROM main_table ORDER BY id');
+      const result = await client.query('SELECT id, request, done, owner, date, comment_sum FROM main_table ORDER BY id');
       const results = { 'results': (result) ? result.rows : null};
       res.send(JSON.stringify(results));
       client.release();
@@ -98,7 +98,21 @@ app.get('/api/db', async (req, res) => {
   })
 
 
-
+  app.get('/api/getComments', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      var reqId = req.query.id;
+      console.log(reqId);
+      const result = await client.query('SELECT * FROM '+commentTableName+' WHERE commentid=\''+reqId+'\'');
+      const results = { 'results': (result) ? result.rows : null};
+      console.log(results);
+      res.send(JSON.stringify(results));
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
 
 
   app.post( 
@@ -123,7 +137,49 @@ app.get('/api/db', async (req, res) => {
     })
   });
 
+//comments
+  app.post( 
+    '/api/sendcomment', 
+    (request, response) => {
+        var commentId = request.body.id;
+        var authorUrl = request.body.authorUrl;  
+        var avatarUrl = request.body.avatarUrl;
+        var createdAt = request.body.createdAt;  
+        var fullName = request.body.fullName;
+        var text = request.body.text;
+        console.log(commentId);
+        console.log(fullName);
 
+    pool.query(
+        
+        'INSERT INTO '+ commentTableName +'(commentid, authorurl, avatarurl, createdat, fullname, text) '+ 
+        'VALUES ($1,$2,$3,$4,$5,$6);', [commentId, authorUrl, avatarUrl, createdAt, fullName, text],
+         error => {
+             if (error) {
+         throw error
+      }
+      response.status(201).json({ status: 'success', message: 'your comment was accepted successfuly :)' })
+    })
+  });
+
+
+  app.post( 
+    '/api/inc_comment_sum', 
+    (request, response) => {
+        var commentId = request.body.id;
+        console.log("comment id is: " + commentId);
+  
+    pool.query(
+        'UPDATE '+ mainTableName+
+        ' SET comment_sum = comment_sum + 1 '+
+        'Where id = $1', [commentId],
+         error => {
+             if (error) {
+         throw error
+      }
+      response.status(201).json({ status: 'success', message: 'comment_sum was incremented' })
+    })
+  });
 
    // i know its not secure, but there isnt much to secure yet. please dont abuse it :)
    //this api marks a request as "done", including a mail notification to author

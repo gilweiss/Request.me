@@ -7,8 +7,11 @@ import './app.css';
 import axios from 'axios';
 import { MDBDataTable } from 'mdbreact';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { CommentModal } from './commentsModal';
 
-// button type, active, changing state function
+
+//the class that screams for refactoring the most
+
 
 export class RequestTable extends React.Component {
   constructor(props) {
@@ -16,10 +19,17 @@ export class RequestTable extends React.Component {
     this.state = {
       triger: 'false',
       poolTable: '',
-      tableData: ''
+      tableData: '',
+      filter: 'all'
     };
   }
 
+
+
+  
+
+
+  
   componentDidMount() {
     this.renderReqTable("all");
   }
@@ -27,7 +37,7 @@ export class RequestTable extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.reload !== prevProps.reload) {
-      this.renderReqTable("all");
+      this.refreshReqTable("same");
     }
   }
 
@@ -51,11 +61,23 @@ export class RequestTable extends React.Component {
     });
   }
 
-  //filter is "done","all" or "todo" //
+  refreshReqTable = async (option) => {
+    let optionVar = option;
+    if (option === 'same' ) {optionVar = this.state.filter};
+    this.props.load();
+    var myTable = await this.DatatablePage("all");
+    if (optionVar != "all"){
+    var myTable = await this.DatatablePage(optionVar);
+    }
+    this.setState({ poolTable: myTable });
+  }
+
+  //filter is "done","all", "todo" or "same"//
   renderReqTable = async (option) => {
-    this.props.load(); 
+    this.setState({ filter: option });
+    this.props.load();
     var myTable = await this.DatatablePage(option);
-    this.setState({ poolTable: myTable })
+    this.setState({ poolTable: myTable });
   }
 
 
@@ -90,7 +112,7 @@ export class RequestTable extends React.Component {
       },
       formatter: (status, row) => {
         return (
-          <div >
+          <div  class="oppsing-sides">
             <span>
               {rows[row.key].done && (
                 <s>{status} </s>
@@ -99,7 +121,14 @@ export class RequestTable extends React.Component {
               {!rows[row.key].done && (
                 <span>{status}</span>
               )}
-            </span>
+               </span>
+              
+              <span class = "bulk">
+              { row.comment_sum > 0  && ( <div class = "bulk2"> {row.comment_sum}  </div> ) }
+               <CommentModal id={row.id} refreshReqTable={this.refreshReqTable}/>
+               </span>
+             
+
           </div>
         )
       }
@@ -116,8 +145,8 @@ export class RequestTable extends React.Component {
 
 
     console.log(rows);
-    const CaptionElement = () => <h3 style={{ textAlign: 'center', color: 'black' }}>Request Pool</h3>;
-    this.props.loaded(option); 
+    //const CaptionElement = () => <br/> ;
+    this.props.loaded(option);
 
     const customTotal = (from, to, size) => (
       <span className="react-bootstrap-table-pagination-total">
@@ -163,7 +192,7 @@ export class RequestTable extends React.Component {
         columns={columns}
         condensed
         //pagination={ paginationFactory(options) } //when pagination will be needed
-        caption={<CaptionElement />}
+        //caption={<CaptionElement />}
         rowClasses={rowClasses}
       />
     );
@@ -183,8 +212,11 @@ export class RequestTable extends React.Component {
     return (
 
       <div className='reqTable'>
+        <h3 style={{ textAlign: 'center', color: 'black' }}> <u>Request Pool  </u> </h3>
+        <br />
+        
         <FilterButtons renderfunction={this.renderReqTable} />
-        <br/>
+        <br />
         {this.state.poolTable}
       </div>
     )

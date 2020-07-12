@@ -1,0 +1,19 @@
+.commentButton {
+  display: inline-block;
+  padding: 0.85em 1em;
+  font-family: inherit;
+  border: none;
+  border-radius: 0.5em;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  background: #0088ff;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+
+.commentButton:hover {
+  background-color: #0c79da;
+}

@@ -85,3 +85,45 @@ margin-top: 5px;
 }
 
 .react-bootstrap-table table { table-layout: auto !important; }
+
+.custom-modal {
+  width:130% !important;
+}
+
+.oppsing-sides {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bulk {
+    
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 5px;
+     margin-left: 3px;
+     width: auto;
+     height: 27px;
+
+}
+
+.bulk2 {
+  margin-right: 5px;
+  font-size: 14px;
+  color: #a4b8c9;
+  height: 30px;
+  font-weight: bold;
+}
+
+.commentTableButton {
+  height: 20px !important;
+  width: auto;
+  border: 0px !important;
+  background-color: transparent !important;
+  display: inline-block !important;
+  padding: 0em  0em !important;
+  border-radius:0em !important;
+  outline: none !important;
+  border-radius: 0px 0px !important;
+  line-height: 0 !important;
+  padding-bottom: 0em !important;
+}

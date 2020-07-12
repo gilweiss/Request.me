@@ -10,6 +10,8 @@ import { GoogleLogin } from './googleLogin';
 import logo from './res/logo.png';
 import { RequestTable } from './requestTable';
 
+import { CommentModal } from './commentsModal';
+
 
 class MyForm extends React.Component {
   constructor(props) {
@@ -202,6 +204,7 @@ class MyForm extends React.Component {
           </form>
           <RequestTable reload={this.state.loadReqTableTrigger} load={this.textBoxLoad} loaded={this.textBoxLoaded} />
           <br /> <br /><br /> <br />
+          <br /> <br />
         </div>
       </div>
     );
