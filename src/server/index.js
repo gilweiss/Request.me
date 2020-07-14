@@ -140,7 +140,7 @@ app.get('/api/db', async (req, res) => {
 //comments
   app.post( 
     '/api/sendcomment', 
-    (request, response) => {
+    async (request, response) => {
         var commentId = request.body.id;
         var authorUrl = request.body.authorUrl;  
         var avatarUrl = request.body.avatarUrl;
@@ -160,6 +160,12 @@ app.get('/api/db', async (req, res) => {
       }
       response.status(201).json({ status: 'success', message: 'your comment was accepted successfuly :)' })
     })
+    
+    //bad way to authenticate admin:
+    if (avatarUrl === "https://i.imgur.com/U1lBFYA.png"){
+    await sendEmailToRequestAuthor(commentId, "adminComment");
+    }
+
   });
 
 
@@ -199,23 +205,34 @@ app.get('/api/db', async (req, res) => {
     console.log("request: "+results+" was marked \'done\'");
     console.log("request: "+req.params.id+" was marked \'done\'");
     
-    const row = await client.query(
-        'SELECT * FROM '+ mainTableName+
-        ' WHERE id = ('+req.params.id+');'
-         );
+    await sendEmailToRequestAuthor(req.params.id , "done");
+    
 
-    owner2 = row.rows[0].owner;
-    adress2 = row.rows[0].mail;
-    request2 = row.rows[0].request;
-    date2 = row.rows[0].date;
-      myMail.sendMail(adress2, req.params.id, owner2, request2 ,date2 );
-      console.log("mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2 +" and date: " + date2);
       res.send("success! mail regarding request id:"+req.params.id +" was sent to: "+adress2);
     } catch (err) {
       console.error(err);
       res.send("Error this" + err);
     }
   })
+
+
+  //purpose is "done" or "adminComment"
+sendEmailToRequestAuthor = async (id , purpose) =>
+{
+  const client = await pool.connect()
+  const row = await client.query(
+    'SELECT * FROM '+ mainTableName+
+    ' WHERE id = ('+id+');'
+     );
+
+owner2 = row.rows[0].owner;
+adress2 = row.rows[0].mail;
+request2 = row.rows[0].request;
+date2 = row.rows[0].date;
+  myMail.sendMail(adress2, id, owner2, request2 ,date2 , purpose);
+  console.log("mail was sent to owner: " +owner2+ " with the adress:" +adress2+ " and with the request: "+ request2 +" and date: " + date2);
+
+}
 
 
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
