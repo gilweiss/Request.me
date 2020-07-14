@@ -20,7 +20,7 @@ export class RequestTable extends React.Component {
       triger: 'false',
       poolTable: '',
       tableData: '',
-      filter: 'all'
+      filter: 'todo'
     };
   }
 
@@ -31,7 +31,7 @@ export class RequestTable extends React.Component {
 
   
   componentDidMount() {
-    this.renderReqTable("all");
+    this.refreshReqTable("todo");
   }
 
   componentDidUpdate(prevProps) {

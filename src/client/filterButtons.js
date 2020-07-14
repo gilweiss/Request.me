@@ -7,9 +7,9 @@ export class FilterButtons extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      allTable: 'success',
+      allTable: 'secondary',
       doneTable: 'secondary',
-      todoTable: 'secondary',
+      todoTable: 'warning',
     };
 
     //  updateStateLDR = updateStateLDR.bind(this);  //was previously used for component communication
@@ -25,18 +25,19 @@ export class FilterButtons extends React.Component {
 
   changeActiveButton(filter) {
 
-    this.setState({ allTable: (filter == "all" ? "success" : "secondary") });
-    this.setState({ doneTable: (filter == "done" ? "success" : "secondary") });
-    this.setState({ todoTable: (filter == "todo" ? "success" : "secondary") });
+    this.setState({ allTable: (filter == "all" ? "warning" : "secondary") });
+    this.setState({ doneTable: (filter == "done" ? "warning" : "secondary") });
+    this.setState({ todoTable: (filter == "todo" ? "warning" : "secondary") });
   }
 
   render() {
     return (
 
       <div className='buttons'>
-        <Button size="sm" variant={this.state.allTable} onClick={() => this.loadReqTable("all")} >Request pool</Button> &nbsp;
+        <Button size="sm" variant={this.state.todoTable} onClick={() => this.loadReqTable("todo")} >TODO</Button> &nbsp;
         <Button size="sm" variant={this.state.doneTable} onClick={() => this.loadReqTable("done")} >COMPLETED</Button> &nbsp;
-        <Button size="sm" variant={this.state.todoTable} onClick={() => this.loadReqTable("todo")} >TODO</Button>
+        <Button size="sm" variant={this.state.allTable} onClick={() => this.loadReqTable("all")} >ALL REQUESTS</Button> 
+
       </div>
     )
   }
