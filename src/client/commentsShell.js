@@ -48,10 +48,7 @@ export class CommentsShell extends React.Component {
           onSubmit={async (text, name) => {
             if (text.length > 0 && name.length > 0) {
               console.log('submit:', text);
-               
-
-
-              if (name === "Gil!!!"){
+              if (name === "Gil!!!") {
                 await sendComment(this.props.id,
                  {
                    authorUrl: '',
@@ -61,8 +58,7 @@ export class CommentsShell extends React.Component {
                    text,
                  }
                );
-               }
-               else{
+               } else {
                  await sendComment(this.props.id,
                    {
                      authorUrl: '',
@@ -73,19 +69,8 @@ export class CommentsShell extends React.Component {
                    }
                  );
                }
-
-
-              //BAD coding, but i wanna relaese an update already
-               setTimeout(() => { 
-                  this.loadComments(this.props.id);
+               this.loadComments(this.props.id);
                 this.props.refreshReqTable("same");
-               }, 500);
-                  
-                
-                
-           
-                
-
             }
           }}
         />
