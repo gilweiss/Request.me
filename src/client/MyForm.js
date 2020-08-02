@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import './app.css';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import { AwesomeComponent } from './spnr';
-import { FilterButtons } from './filterButtons';
-import { GoogleLogin } from './googleLogin';
-// import { updateStateLDR } from './spnr';  //was previously used for component communication
+import  GoogleLogin  from './googleLogin';
 import logo from './res/logo.png';
 import { RequestTable } from './requestTable';
 
-import { CommentModal } from './commentsModal';
+
 
 
 class MyForm extends React.Component {
@@ -169,8 +166,8 @@ class MyForm extends React.Component {
   render() {
     return (
       <div>
-        <img src={logo} class="right-float" alt="legacy logo" ></img>
-        <div class="google-auth-button-div">
+        <img src={logo} className="right-float" alt="legacy logo" ></img>
+        <div className="google-auth-button-div">
           <GoogleLogin fillBoxesFunction={this.setGoogleFields} />
         </div>
 

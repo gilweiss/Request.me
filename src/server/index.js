@@ -102,10 +102,10 @@ app.get('/api/db', async (req, res) => {
     try {
       const client = await pool.connect()
       var reqId = req.query.id;
-      console.log(reqId);
+      
       const result = await client.query('SELECT * FROM '+commentTableName+' WHERE commentid=\''+reqId+'\'');
       const results = { 'results': (result) ? result.rows : null};
-      console.log(results);
+      
       res.send(JSON.stringify(results));
       client.release();
     } catch (err) {
@@ -147,8 +147,7 @@ app.get('/api/db', async (req, res) => {
         var createdAt = request.body.createdAt;  
         var fullName = request.body.fullName;
         var text = request.body.text;
-        console.log(commentId);
-        console.log(fullName);
+
 
     pool.query(
         
@@ -173,7 +172,7 @@ app.get('/api/db', async (req, res) => {
     '/api/inc_comment_sum', 
     (request, response) => {
         var commentId = request.body.id;
-        console.log("comment id is: " + commentId);
+
   
     pool.query(
         'UPDATE '+ mainTableName+

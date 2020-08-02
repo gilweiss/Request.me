@@ -23,7 +23,7 @@ export class CommentModal extends React.Component{
     render(){
         return(
             <div>
-                <input class="commentTableButton" type="image" src={commentIcon} onClick={() => this.handleModalShowHide()}/>
+                <input className="commentTableButton" type="image" src={commentIcon} onClick={() => this.handleModalShowHide()}/>
 
                 <Modal
         show={this.state.showHide}

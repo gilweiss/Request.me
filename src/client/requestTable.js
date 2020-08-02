@@ -112,7 +112,7 @@ export class RequestTable extends React.Component {
       },
       formatter: (status, row) => {
         return (
-          <div  class="oppsing-sides">
+          <div  className="oppsing-sides">
             <span>
               {rows[row.key].done && (
                 <s>{status} </s>
@@ -123,8 +123,8 @@ export class RequestTable extends React.Component {
               )}
                </span>
               
-              <span class = "bulk">
-              { row.comment_sum > 0  && ( <div class = "bulk2"> {row.comment_sum}  </div> ) }
+              <span className = "bulk">
+              { row.comment_sum > 0  && ( <div className = "bulk2"> {row.comment_sum}  </div> ) }
                <CommentModal id={row.id} refreshReqTable={this.refreshReqTable}/>
                </span>
              

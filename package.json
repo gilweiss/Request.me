@@ -31,7 +31,9 @@
     "react-bootstrap-table-next": "^4.0.0",
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-dom": "^16.5.2",
+    "react-redux": "^7.2.1",
     "react-spinners": "^0.8.1",
+    "redux": "^4.0.5",
     "simple-react-comments": "^1.1.0",
     "sqlite3": "^4.1.1"
   },

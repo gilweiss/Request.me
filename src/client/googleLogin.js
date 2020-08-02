@@ -1,11 +1,14 @@
 import React from 'react';
+import { connect } from 'react-redux'             //for redux
+import { setUser, disconnectUser } from './actions'   //TODO: later add disconnectUser
 
 // button type, active, changing state function
 
-export class GoogleLogin extends React.Component {
+class ConnectedGoogleLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+    name : "",
     };
   }
 
@@ -13,6 +16,7 @@ export class GoogleLogin extends React.Component {
   componentDidMount() {
     this.googleSDK();
   }
+  
 
   googleSDK() {
     window['googleSDKLoaded'] = () => {
@@ -35,7 +39,7 @@ export class GoogleLogin extends React.Component {
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'google-jssdk'));
   }
- 
+
 
   prepareLoginButton = () => {
 
@@ -48,12 +52,13 @@ export class GoogleLogin extends React.Component {
 
         let profile = googleUser.getBasicProfile();
         // console.log('Token || ' + googleUser.getAuthResponse().id_token);
-        // console.log('ID: ' + profile.getId());
         // console.log('Name: ' + profile.getName());
         // console.log('Image URL: ' + profile.getImageUrl());
         // console.log('Email: ' + profile.getEmail());
+        this.props.dispatch(setUser(profile.getId()))
         var userName = profile.getGivenName().substring(0, 7);
-        var address= profile.getEmail();
+        this.setState({name : profile.getGivenName()})
+        var address = profile.getEmail();
         this.props.fillBoxesFunction(userName, address);
 
 
@@ -63,14 +68,43 @@ export class GoogleLogin extends React.Component {
 
   }
 
+
+  logout = () => {
+    this.props.dispatch(disconnectUser());
+    this.setState({name : ""});
+    this.props.fillBoxesFunction("", "");
+    
+  }
+
+
   render() {
     return (
 
       <div className='google-log-in'>
+        {this.props.user.id === 0 ?
+        <div>
           <button className="loginBtn loginBtn--google" ref="googleLoginBtn">
-          Login with Google
-                                    </button>
+            Login with Google
+          </button>
+        </div>
+          :
+          <button className="loginBtn loginBtn--google" onClick={() => this.logout()}>
+            Logout ({this.state.name})
+        </button>
+        }
       </div>
     )
   }
 }
+
+
+const mapStateToProps = state => {
+  return { user: state.user }
+}
+
+const GoogleLogin = connect(
+  mapStateToProps
+)(ConnectedGoogleLogin);
+
+
+export default GoogleLogin;
