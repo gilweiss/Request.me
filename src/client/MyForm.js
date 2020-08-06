@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { AwesomeComponent } from './spnr';
 import  GoogleLogin  from './googleLogin';
 import logo from './res/logo.png';
-import { RequestTable } from './requestTable';
+import  RequestTable  from './requestTable';
 
 
 

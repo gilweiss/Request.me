@@ -6,12 +6,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
-export class ReactModal extends React.Component{
+export class LikeLoginModal extends React.Component{
 
-    constructor(){
+    constructor(props){
         super(props);
         this.state = {
-            showHide : false
+            showHide : false,
+            invoked : false
         }
     }
 
@@ -19,27 +20,35 @@ export class ReactModal extends React.Component{
         this.setState({ showHide: !this.state.showHide })
     }
 
+componentDidUpdate(){
+  if (this.props.invoke && this.state.invoked === false){
+  this.handleModalShowHide()
+  this.setState({invoked : true})
+  }
+  if (!this.props.invoke && this.state.invoked === true){
+    this.setState({invoked : false})
+    }
+
+
+}
+
     render(){
         return(
             <div>
-                <Button variant="primary" onClick={() => this.handleModalShowHide()}>
-                    Launch demo modal
-                </Button>
-
                 <Modal
         show={this.state.showHide}
-        size='xl'
+        size='small'
         onHide={() => this.handleModalShowHide()}
         
       >
         <Modal.Header closeButton onClick={() => this.handleModalShowHide()}>
           <Modal.Title>
-            Comments
+          {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            say what?
+            {this.props.body}
           </p>
         </Modal.Body>
       </Modal>

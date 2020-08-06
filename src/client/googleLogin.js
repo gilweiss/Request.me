@@ -16,7 +16,8 @@ class ConnectedGoogleLogin extends React.Component {
   componentDidMount() {
     this.googleSDK();
   }
-  
+
+
 
   googleSDK() {
     window['googleSDKLoaded'] = () => {
@@ -73,25 +74,25 @@ class ConnectedGoogleLogin extends React.Component {
     this.props.dispatch(disconnectUser());
     this.setState({name : ""});
     this.props.fillBoxesFunction("", "");
+    this.googleSDK();
     
   }
 
 
   render() {
     return (
-
       <div className='google-log-in'>
-        {this.props.user.id === 0 ?
         <div>
-          <button className="loginBtn loginBtn--google" ref="googleLoginBtn">
+          <button className={this.props.user.id === 0 ? "loginBtn loginBtn--google" : "loginBtn loginBtn--google-hidden"} ref="googleLoginBtn">
             Login with Google
           </button>
         </div>
-          :
+        { this.props.user.id !== 0 ?
           <button className="loginBtn loginBtn--google" onClick={() => this.logout()}>
             Logout ({this.state.name})
         </button>
-        }
+       : ""
+       }
       </div>
     )
   }

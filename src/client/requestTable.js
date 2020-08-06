@@ -8,38 +8,89 @@ import axios from 'axios';
 import { MDBDataTable } from 'mdbreact';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { CommentModal } from './commentsModal';
-
+import LikeComponent from './likeComponent';
+import { connect } from 'react-redux'
+import { getUserLikesFromServer } from './serverUtils';
 
 //the class that screams for refactoring the most
 
 
-export class RequestTable extends React.Component {
+export class ConnectedRequestTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      triger: 'false',
-      poolTable: '',
-      tableData: '',
-      filter: 'todo'
+      triger: true,
+      poolTable: null,
+      tableData: null,
+      filter: 'todo',
+      userLikes: null,
+      isLogin: false,
+      likedComments: [],
     };
+    this.incLikeSumInReqTableData = this.incLikeSumInReqTableData.bind(this);
   }
 
 
 
+
   
 
 
-  
   componentDidMount() {
     this.refreshReqTable("todo");
+   
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.reload !== prevProps.reload) {
+     
       this.refreshReqTable("same");
+      
     }
+    // this is patchwork instead of refactoring to hooks, i`m gonna check if user is logged in and download its data from server
+
+    if (!this.state.isLogin && (this.props.user.id !== 0)) {
+      
+      this.setState({ isLogin: true });
+      // let likedComments = await this.getUserLikedComments(this.props.user.id);
+      // this.setState({ likedComments: likedComments })
+      // setTimeout(()=> console.log("refresh");}, 2000);
+      this.setState({poolTable : ""})
+      this.refreshReqTable("same");
+      
+      
+
+    }
+    if (this.props.user.id === 0 && this.state.isLogin) {
+
+      this.setState({ isLogin: false });
+
+      this.setState({ likedComments: {} });
+      this.setState({ isLogin: false });
+      this.setState({poolTable : ""});
+      this.refreshReqTable("same");
+      
+
+    }
+
   }
+
+  getUserLikedComments = async (userId) => {
+
+    return new Promise(async function (resolve, reject) {
+      var answer = "";
+      try {
+        answer = await getUserLikesFromServer(userId);
+        resolve(answer);
+      }
+      catch{
+        console.log("no likes or error");
+      }
+      resolve({});
+    })
+  }
+
 
   getReqPool = async () => {
 
@@ -53,7 +104,6 @@ export class RequestTable extends React.Component {
     return new Promise(function (resolve, reject) {
       axios.get('/api/db')
         .then((response) => {
-          console.log("response from server: " + response.data);
           resolve(response.data);
         }, (error) => {
           console.log(error);
@@ -63,21 +113,32 @@ export class RequestTable extends React.Component {
 
   refreshReqTable = async (option) => {
     let optionVar = option;
-    if (option === 'same' ) {optionVar = this.state.filter};
+
+    this.setState({ likedComments: await this.getUserLikedComments(this.props.user.id) });
+
+    if (option === 'same') { optionVar = this.state.filter };
     this.props.load();
     var myTable = await this.DatatablePage("all");
-    if (optionVar != "all"){
-    var myTable = await this.DatatablePage(optionVar);
+    if (optionVar != "all") {
+      var myTable = await this.DatatablePage(optionVar);
     }
+    
     this.setState({ poolTable: myTable });
   }
 
   //filter is "done","all", "todo" or "same"//
   renderReqTable = async (option) => {
     this.setState({ filter: option });
+    this.setState({ likedComments: await this.getUserLikedComments(this.props.user.id) });
     this.props.load();
     var myTable = await this.DatatablePage(option);
     this.setState({ poolTable: myTable });
+  }
+
+  incLikeSumInReqTableData = (id, inc) => {
+  let newTableData = this.state.tableData;
+  newTableData[id-1].like_sum = newTableData[id-1].like_sum +inc;
+  this.setState ({tableData : newTableData});
   }
 
 
@@ -112,7 +173,7 @@ export class RequestTable extends React.Component {
       },
       formatter: (status, row) => {
         return (
-          <div  className="oppsing-sides">
+          <div className="oppsing-sides">
             <span>
               {rows[row.key].done && (
                 <s>{status} </s>
@@ -121,13 +182,13 @@ export class RequestTable extends React.Component {
               {!rows[row.key].done && (
                 <span>{status}</span>
               )}
-               </span>
-              
-              <span className = "bulk">
-              { row.comment_sum > 0  && ( <div className = "bulk2"> {row.comment_sum}  </div> ) }
-               <CommentModal id={row.id} refreshReqTable={this.refreshReqTable}/>
-               </span>
-             
+            </span>
+            <span className="bulk">
+              <LikeComponent likeSum={row.like_sum} liked={row.id in this.state.likedComments} commentId={row.id} incCallback = {this.incLikeSumInReqTableData} />
+              {row.comment_sum > 0 && (<div className="bulk2"> {row.comment_sum}  </div>)}
+              <CommentModal id={row.id} refreshReqTable={this.refreshReqTable} />
+            </span>
+
 
           </div>
         )
@@ -214,11 +275,24 @@ export class RequestTable extends React.Component {
       <div className='reqTable'>
         <h3 style={{ textAlign: 'center', color: 'black' }}> <u>Request Pool  </u> </h3>
         <br />
-        
+
         <FilterButtons renderfunction={this.renderReqTable} />
         <br />
+        
         {this.state.poolTable}
+
+
       </div>
     )
   }
 }
+
+const mapStateToProps = state => {
+  return { user: state.user }
+}
+
+const RequestTable = connect(
+  mapStateToProps
+)(ConnectedRequestTable);
+
+export default RequestTable;
