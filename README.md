@@ -17,4 +17,14 @@ Since then, the project grew more and more according to the feature and developm
 ![  ](day1.JPG) 
 #### The app in day10:</br>
 ![  ](day10.JPG) 
+#### August 2020:</br>
+![  ](15.8.20.JPG) 
+#### </br>
+![  ](june20-2.jpg) 
+#### November 2020:</br>
+![  ](16.11.20.JPG) 
+
+
+
+
 
