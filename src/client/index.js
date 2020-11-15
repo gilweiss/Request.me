@@ -6,13 +6,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './reducers'
+import {applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, applyMiddleware(thunk))
 
 
 render(
 <Provider store={store}>
-    <MyForm />
+    <MyForm/>
     </Provider>
 , document.getElementById('root'));

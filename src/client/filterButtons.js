@@ -20,23 +20,23 @@ export class FilterButtons extends React.Component {
   //filter is "done","all" or "todo"
   loadReqTable = (filter) => {
     this.changeActiveButton(filter);
-    this.props.renderfunction(filter);
+    this.props.setFilterCallback(filter);
   }
 
   changeActiveButton(filter) {
 
-    this.setState({ allTable: (filter == "all" ? "warning" : "secondary") });
-    this.setState({ doneTable: (filter == "done" ? "warning" : "secondary") });
-    this.setState({ todoTable: (filter == "todo" ? "warning" : "secondary") });
+    this.setState({ allTable: (filter == "ALL" ? "warning" : "secondary") });
+    this.setState({ doneTable: (filter == "DONE" ? "warning" : "secondary") });
+    this.setState({ todoTable: (filter == "TODO" ? "warning" : "secondary") });
   }
 
   render() {
     return (
 
       <div className='buttons'>
-        <Button size="sm" variant={this.state.todoTable} onClick={() => this.loadReqTable("todo")} >TODO</Button> &nbsp;
-        <Button size="sm" variant={this.state.doneTable} onClick={() => this.loadReqTable("done")} >COMPLETED</Button> &nbsp;
-        <Button size="sm" variant={this.state.allTable} onClick={() => this.loadReqTable("all")} >ALL REQUESTS</Button> 
+        <Button size="sm" variant={this.state.todoTable} onClick={() => this.loadReqTable("TODO")} >TODO</Button> &nbsp;
+        <Button size="sm" variant={this.state.doneTable} onClick={() => this.loadReqTable("DONE")} >COMPLETED</Button> &nbsp;
+        <Button size="sm" variant={this.state.allTable} onClick={() => this.loadReqTable("ALL")} >ALL REQUESTS</Button> 
 
       </div>
     )

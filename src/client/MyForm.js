@@ -6,11 +6,15 @@ import { AwesomeComponent } from './spnr';
 import  GoogleLogin  from './googleLogin';
 import logo from './res/logo.png';
 import  RequestTable  from './requestTable';
+import { connect } from 'react-redux'
+import { setRequestTable } from "./actions";
+import { getReqPool3 } from './serverUtils'; //TODO refactor name when done
+import { RequestTableTemp } from './temp_before_refactor/requestTableTemp';
 
 
 
 
-class MyForm extends React.Component {
+class ConnectedMyForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -160,8 +164,14 @@ class MyForm extends React.Component {
 
   ReRenderReqTable = () => {
     this.setState({ loadReqTableTrigger: (this.state.loadReqTableTrigger === true ? false : true)}); //changes trigger state
+    this.storeRequestTable();
   }
 
+  async storeRequestTable() {
+    let reqPool = await getReqPool3();
+    //console.log(reqPool);
+    this.props.dispatch(setRequestTable(reqPool));
+  }
 
   render() {
     return (
@@ -199,7 +209,8 @@ class MyForm extends React.Component {
           
 
           </form>
-          <RequestTable reload={this.state.loadReqTableTrigger} load={this.textBoxLoad} loaded={this.textBoxLoaded} />
+          <RequestTableTemp/>
+          
           <br /> <br /><br /> <br />
           <br /> <br />
         </div>
@@ -207,6 +218,8 @@ class MyForm extends React.Component {
     );
   }
 }
+
+const MyForm = connect()(ConnectedMyForm);
 
 export default MyForm;
 

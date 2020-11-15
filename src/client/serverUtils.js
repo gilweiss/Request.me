@@ -4,6 +4,25 @@ import axios from 'axios';
 
 
 //  '/api/inc_comment_sum', 
+export const getReqPool3 = () => {  //TODO: refactor to main method
+
+    console.log('asking server for stored requests')
+    return new Promise(function (resolve, reject) {
+        axios.get('/api/db')
+            .then((response) => {
+                let results = response.data.results;
+                let indexedResultsById = results.reduce(function(accumulator, currentVal) {
+                    accumulator[currentVal.id] = currentVal;
+                    return accumulator;
+                  }, {});
+                console.log(indexedResultsById);
+                resolve(indexedResultsById);
+            }, (error) => {
+                console.log(error);
+            });
+    });
+}
+
 
 export const incCommentSum = (id) => {
 
@@ -26,9 +45,9 @@ export const updateServerLikes = (commentId, userId, actionAdd) => { //actionAdd
     axios.post(
         '/api/add_del_like',
         {
-             commentId : commentId,
-             userId : userId,
-             actionAdd : actionAdd,
+            commentId: commentId,
+            userId: userId,
+            actionAdd: actionAdd,
         }
     )
         .then((response) => {
@@ -97,8 +116,8 @@ export const getUserLikesFromServer = (userId) => {
         )
             .then((response) => {
                 let results = {};
-                response.data.results.forEach(elem => {results[elem.commentid] = null});
-                console.log("liked comments from server: " + JSON.stringify(results) );
+                response.data.results.forEach(elem => { results[elem.commentid] = null });
+                console.log("liked comments from server: " + JSON.stringify(results));
                 //console.log("test: " + (3 in results));
                 resolve(results);
             }, (error) => {

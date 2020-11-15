@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'             //for redux
 import { setUser, disconnectUser } from './actions'   //TODO: later add disconnectUser
+import { getUserLikesFromServer } from './serverUtils';
 
 // button type, active, changing state function
 
@@ -8,13 +9,14 @@ class ConnectedGoogleLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    name : "",
+      name: "",
     };
   }
 
 
   componentDidMount() {
     this.googleSDK();
+
   }
 
 
@@ -43,26 +45,17 @@ class ConnectedGoogleLogin extends React.Component {
 
 
   prepareLoginButton = () => {
-
-
-    //console.log(this.refs.googleLoginBtn);
-
     this.auth2.attachClickHandler(this.refs.googleLoginBtn, {},
       (googleUser) => {
-
-
         let profile = googleUser.getBasicProfile();
-        // console.log('Token || ' + googleUser.getAuthResponse().id_token);
-        // console.log('Name: ' + profile.getName());
-        // console.log('Image URL: ' + profile.getImageUrl());
-        // console.log('Email: ' + profile.getEmail());
+        //this.props.dispatch(setUser(profile.getId()))
+
         this.props.dispatch(setUser(profile.getId()))
+
         var userName = profile.getGivenName().substring(0, 7);
-        this.setState({name : profile.getGivenName()})
+        this.setState({ name: profile.getGivenName() })
         var address = profile.getEmail();
         this.props.fillBoxesFunction(userName, address);
-
-
       }, (error) => {
         console.log("error with google login: " + JSON.stringify(error, undefined, 2));
       });
@@ -71,11 +64,12 @@ class ConnectedGoogleLogin extends React.Component {
 
 
   logout = () => {
+
     this.props.dispatch(disconnectUser());
-    this.setState({name : ""});
+    this.setState({ name: "" });
     this.props.fillBoxesFunction("", "");
     this.googleSDK();
-    
+
   }
 
 
@@ -87,12 +81,12 @@ class ConnectedGoogleLogin extends React.Component {
             Login with Google
           </button>
         </div>
-        { this.props.user.id !== 0 ?
+        {this.props.user.id !== 0 ?
           <button className="loginBtn loginBtn--google" onClick={() => this.logout()}>
             Logout ({this.state.name})
         </button>
-       : ""
-       }
+          : ""
+        }
       </div>
     )
   }

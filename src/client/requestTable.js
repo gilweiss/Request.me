@@ -11,6 +11,8 @@ import { CommentModal } from './commentsModal';
 import LikeComponent from './likeComponent';
 import { connect } from 'react-redux'
 import { getUserLikesFromServer } from './serverUtils';
+import { getReqPool3 } from './serverUtils';
+import { RequestTableTemp } from './temp_before_refactor/requestTableTemp';
 
 //the class that screams for refactoring the most
 
@@ -95,6 +97,8 @@ export class ConnectedRequestTable extends React.Component {
   getReqPool = async () => {
 
     var answer = await this.getReqPool2();
+   var test = await getReqPool3();
+    console.log("new indexed data: " + test)
     return answer;
   }
 
@@ -115,7 +119,6 @@ export class ConnectedRequestTable extends React.Component {
     let optionVar = option;
 
     this.setState({ likedComments: await this.getUserLikedComments(this.props.user.id) });
-
     if (option === 'same') { optionVar = this.state.filter };
     this.props.load();
     var myTable = await this.DatatablePage("all");
@@ -281,6 +284,8 @@ export class ConnectedRequestTable extends React.Component {
         
         {this.state.poolTable}
 
+        <br/><br/>
+        <RequestTableTemp></RequestTableTemp>
 
       </div>
     )
