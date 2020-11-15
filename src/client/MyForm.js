@@ -176,31 +176,25 @@ class ConnectedMyForm extends React.Component {
   render() {
     return (
       <div>
-        <img src={logo} className="right-float" alt="legacy logo" ></img>
+        <div className="right-float">
+        <img src={logo} className="logo" alt="legacy logo" ></img>
+        </div>
         <div className="google-auth-button-div">
           <GoogleLogin fillBoxesFunction={this.setGoogleFields} />
         </div>
-
         <div align="center">
-
           <form onSubmit={this.handleSubmit} >
-
-
-            <br />
+            <br/>
             <h1><u>Ask for stuff</u></h1>
-
-
-            <br />
-
-            <textarea rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
-
-            <br />
+            <br/>
+            <textarea className="textbox" rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
+            <br/>
             <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
             <input type="text" id="name" name="name" placeholder="your name" maxLength="8" value={this.state.userbox} onChange={this.handleChangeUB} />
-            <br />
-            <label value=" "><b> EMAIL to update about your request : &nbsp;&nbsp; </b> </label>
+            <br/>
+            <label value=" "><b> EMAIL to update about your request: &nbsp;&nbsp; </b> </label>
             <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
-            <br /><br />
+            <br/><br/>
 
 
 
