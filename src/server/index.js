@@ -11,9 +11,21 @@ const pool = new Pool({
   ssl: !String(process.env.DATABASE_URL).includes("localhost")  //in dev mode we bypass ssl (=false)
 });
 
+//http to https redirect in production mode
+if(!String(process.env.DATABASE_URL).includes("localhost")) { //dev=false, production=true. database location (local\remote) is used as a flag
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') //heroku forwarded header
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    else
+      next()
+  })
+}
+
 const mainTableName = "main_table";
 const commentTableName = "comment_table"
 const likeTableName = "like_table"
+
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

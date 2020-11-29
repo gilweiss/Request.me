@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { AwesomeComponent } from './spnr';
 import  GoogleLogin  from './googleLogin';
 import logo from './res/logo.png';
+import githubMark from './res/GitHub-Mark-32px.png';
 import  RequestTable  from './requestTable';
 import { connect } from 'react-redux'
 import { setRequestTable } from "./actions";
@@ -195,18 +196,12 @@ class ConnectedMyForm extends React.Component {
             <label value=" "><b> EMAIL to update about your request: &nbsp;&nbsp; </b> </label>
             <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
             <br/><br/>
-
-
-
             <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br /><br /><AwesomeComponent loading={this.state.loading} /><br />
-
-          
-
           </form>
-          <RequestTableTemp/>
-          
-          <br /> <br /><br /> <br />
-          <br /> <br />
+          <RequestTableTemp/> 
+          <br/><br/>
+          <a href="https://github.com/gilweiss/Request.me"> <img src={githubMark} alt="Request.me GitHub" hight="32px" width="32px"></img> </a>
+          <br/><br/><br/><br/>
         </div>
       </div>
     );
