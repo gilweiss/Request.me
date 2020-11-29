@@ -14,7 +14,7 @@ const store = createStore(rootReducer, applyMiddleware(thunk))
 
 
 render(
-<Provider store={store}>
-    <MyForm/>
-    </Provider>
+        <Provider store={store}>
+         <MyForm/>
+         </Provider>
 , document.getElementById('root'));

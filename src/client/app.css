@@ -255,3 +255,16 @@ margin-top: 5px;
   Width: 85%;
   background-color: #f1f3f3 !important; 
 }
+
+/* 
+.AppContainer{
+  background-image: url(./res/backTest1.png);
+  background-position: top center;
+  background-size: 350px;
+}
+
+@media screen and (max-width: 700px) {
+  .AppContainer  {
+    background-size: 250px;
+  }
+} */
