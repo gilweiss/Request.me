@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserLikesFromServer } from '../serverUtils';
 import { updateRequestTable } from "../actions";
 import { updateLikeTable } from "../actions";
+import { updateLikeMaxSum} from "../actions";
 
 
 
@@ -17,18 +18,27 @@ export const LikeComponentTemp = (props) => { //props: requestId
     const storedCurrentUser = useSelector(state => state.user.id);
     const storedLikeTable = useSelector(state => state.likeTable.likeTable);
     const storedRequestTable = useSelector(state => state.requestTable.requestTable);
+    const storedLikeMaxSum = useSelector(state => state.likeMaxSum.likeMaxSum);
 
     useEffect(() => {
         const storedRequest = storedRequestTable[props.id];
         setIsLiked(props.id in storedLikeTable);
         setLikeSum(storedRequest.like_sum);
         setChangable(storedCurrentUser != 0);
+        if (storedLikeMaxSum == storedRequestTable[props.id].like_sum) setmaxLikesSum(true);
         return () => {
             //cleanup
             setIsLiked(false);
             setChangable(false);
         }
-    }, [storedCurrentUser, storedRequestTable, storedLikeTable]) //TODO dont forget to add cleanup function
+    }, [storedCurrentUser, storedRequestTable, storedLikeTable]) 
+
+    useEffect(() => { //this is here to update the system`s max-likes value, it should be performed only: 1) once a like click was made 2) on a potential candidtate of causing a difference 3)store was already updated with new like_sum value
+        if (maxLikesSum && clickedInCurrentRender)
+        dispatch(updateLikeMaxSum());
+    }, [storedRequestTable])
+
+
 
     const [isChangable, setChangable] = useState(
         false
@@ -42,6 +52,14 @@ export const LikeComponentTemp = (props) => { //props: requestId
     const [invokeLoginRequest, setInvokeLoginRequest] = useState(
         false
     )
+    const [clickedInCurrentRender, setclickedInCurrentRender] = useState(
+        false
+    )
+
+    const [maxLikesSum, setmaxLikesSum] = useState(
+        false
+    )
+    
 
     const click = async () => {
         if (!isChangable) {
@@ -49,6 +67,7 @@ export const LikeComponentTemp = (props) => { //props: requestId
             setTimeout(() => setInvokeLoginRequest(false), 300)
         }
         else {
+            setclickedInCurrentRender(true);
             updateServerLikes(props.id, storedCurrentUser, !isLiked);
             //change local to store for future reloading
             storedRequestTable[props.id].like_sum = isLiked ? likeSum - 1 : likeSum + 1

@@ -1,5 +1,6 @@
 import { getReqPool3 } from '../serverUtils'; //TODO refactor name when done
 import { getUserLikesFromServer } from '../serverUtils';
+import { getMaxLikeSum } from '../serverUtils';
 
 
 export const setUser = (userId) => {
@@ -39,3 +40,14 @@ export const updateLikeTable = (likeTable) => ({
   likeTable					                        //transfered data
 })
 
+
+export const updateLikeMaxSum = () => {
+  return async dispatch =>                          //thank you thunk
+  {
+    const likeMaxSum = await getMaxLikeSum();
+    dispatch({
+      type: 'UPDATE_LIKE_MAX_SUM',                    //const name for action
+      likeMaxSum					                        //transfered data
+    })
+  }
+}

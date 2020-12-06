@@ -200,6 +200,17 @@ margin-top: 5px;
   color: rgb(0, 0, 0);
 }
 
+.requestbox.id.header {
+  position: relative;
+  display:inline-flex;
+  left: 0px;
+  top: -5px;
+  padding: 5px;
+  font-weight: bold;
+  font-style: normal;
+  color: rgb(38, 128, 42);
+}
+
 .requestbox.date {
   position: absolute;
   right: 0px;
@@ -208,6 +219,8 @@ margin-top: 5px;
   font-weight: bold;
    color: rgb(0, 0, 0);
 }
+
+
 
 .requestbox.body {
   padding: 5px;
@@ -232,6 +245,16 @@ margin-top: 5px;
 
 .card .card-body {
   background-color: #f1f3f3 ; 
+  border-color: #c9d4d4 ;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  padding: 5px;
+  text-align: justify;
+  font-weight: normal;
+}
+
+.card .card-body-likeLeader {
+  background-color: #daedfa ; 
   border-color: #c9d4d4 ;
   padding-top: 5px !important;
   padding-bottom: 5px !important;
@@ -268,3 +291,14 @@ margin-top: 5px;
     background-size: 250px;
   }
 } */
+
+.customeToolTipTheme {
+  color: rgb(232, 232, 232)ant;
+  background-color:#3e4946 !important;
+  border-radius: 4px !important;
+  padding: 3px !important;
+  padding-right: 10px !important;
+  padding-left: 10px !important;
+  opacity: 0.7 !important;
+
+}

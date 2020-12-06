@@ -191,13 +191,21 @@ class ConnectedMyForm extends React.Component {
             <textarea className="textbox" rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
             <br/>
             <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
-            <input type="text" id="name" name="name" placeholder="your name" maxLength="8" value={this.state.userbox} onChange={this.handleChangeUB} />
+            <input type="text" id="name" name="name" placeholder="your name" maxLength="14" value={this.state.userbox} onChange={this.props.userId !== 0 ? null : this.handleChangeUB} />
             <br/>
             <label value=" "><b> EMAIL to update about your request: &nbsp;&nbsp; </b> </label>
-            <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox} onChange={this.handleChangeMB} />
+            <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox}  onChange={this.props.userId !== 0 ? null : this.handleChangeMB}  />
             <br/><br/>
-            <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br /><br /><AwesomeComponent loading={this.state.loading} /><br />
+            <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br />
+            
+            
+            <br />
+            {/* request #34 : hearts */} <span>&#x2764; &#x2764;  &#x2764;</span> 
+            <AwesomeComponent loading={this.state.loading} />
+            
+            <br />
           </form>
+          
           <RequestTableTemp/> 
           <br/><br/>
           <a href="https://github.com/gilweiss/Request.me"> <img src={githubMark} alt="Request.me GitHub" hight="32px" width="32px"></img> </a>
@@ -208,7 +216,11 @@ class ConnectedMyForm extends React.Component {
   }
 }
 
-const MyForm = connect()(ConnectedMyForm);
+const mapStateToProps = (state) => {
+  return { userId: state.user.id }
+}
+
+const MyForm = connect(mapStateToProps)(ConnectedMyForm);
 
 export default MyForm;
 

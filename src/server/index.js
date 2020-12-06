@@ -307,6 +307,19 @@ app.post(
     }
   })
 
+  app.get('/api/getMaxLikes', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      const result = await client.query('SELECT MAX(like_sum) FROM main_table WHERE done = false;');
+      const results = { 'results': (result) ? result.rows : null};
+      res.send(JSON.stringify(results.results[0].max));
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
+
 
 
 

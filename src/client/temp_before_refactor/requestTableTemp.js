@@ -4,7 +4,7 @@ import { setRequestTable } from "../actions";
 import { FilterButtons } from '../filterButtons';
 import { getReqPool3 } from '../serverUtils'; //TODO refactor name when done
 import { RequestBoxTemp } from "./requestBoxTemp";
-
+import { updateLikeMaxSum} from "../actions";
 
 
 export const RequestTableTemp = (props) => { //props: not yet, add filter
@@ -17,7 +17,8 @@ export const RequestTableTemp = (props) => { //props: not yet, add filter
     )
 //setFilterCallback
     useEffect(() => {
-        dispatch(setRequestTable())
+        dispatch(setRequestTable());
+        dispatch(updateLikeMaxSum());
     }, [])
 
         const generateRequestBoxes = () => {
@@ -39,7 +40,6 @@ export const RequestTableTemp = (props) => { //props: not yet, add filter
 
     return (
         <span className="tempReqTable">
-         
              <h3 style={{ textAlign: 'center', color: 'black' }}> <u>Request Pool  </u> </h3>
              <br />
             <FilterButtons setFilterCallback= {setFilter}/>

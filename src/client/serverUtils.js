@@ -5,7 +5,6 @@ import axios from 'axios';
 
 //  '/api/inc_comment_sum', 
 export const getReqPool3 = () => {  //TODO: refactor to main method
-
     console.log('asking server for stored requests')
     return new Promise(function (resolve, reject) {
         axios.get('/api/db')
@@ -125,4 +124,20 @@ export const getUserLikesFromServer = (userId) => {
             });
     });
 }
+
+
+export const getMaxLikeSum = () => {
+
+    console.log('asking server for maximum likes number: ');
+    return new Promise(function (resolve, reject) {
+        axios.get('/api/getMaxLikes')
+            .then((response) => {
+                console.log("response (maximum likes) from server: " +response.data );
+                resolve(response.data);
+            }, (error) => {
+                console.log(error);
+            });
+    });
+}
+
 
