@@ -29,7 +29,7 @@ export const RequestBoxTemp = (props) => { //props: id
                         <span className="requestbox id owner">
                             {storedRequest.owner}
                         </span>
-                        {(storedRequest.like_sum == storedLikeMaxSum ? <span className="requestbox id header">
+                        {((storedRequest.like_sum == storedLikeMaxSum) && !storedRequest.done ? <span className="requestbox id header">
                         <span  data-tip data-for="like-leader"> &#11088; </span>
                          <ReactTooltip id="like-leader" className="customeToolTipTheme" effect="solid">
                         <span>Like leader!</span>

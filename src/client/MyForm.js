@@ -145,8 +145,10 @@ class ConnectedMyForm extends React.Component {
         this.setState({ textbox: "" });
 
         this.setState({ loading: false });
+        if (this.props.userId == 0) {
         this.setState({ userbox: "" });
         this.setState({ mailbox: "" });
+        }
         console.log(error);
         alert("something went wrong, sorry");
       });
@@ -191,21 +193,23 @@ class ConnectedMyForm extends React.Component {
             <textarea className="textbox" rows="6" cols="50" placeholder="Please be reasonable with your request" value={this.state.textbox} onChange={this.handleChangeTB} />
             <br/>
             <label value=" "><b> Request owner: &nbsp;&nbsp; </b> </label>
-            <input type="text" id="name" name="name" placeholder="your name" maxLength="14" value={this.state.userbox} onChange={this.props.userId !== 0 ? null : this.handleChangeUB} />
+                  {this.props.userId == 0 ? 
+                        <input type="text" id="name" name="name" placeholder="your name" maxLength="14" value={this.state.userbox} onChange={this.handleChangeUB} />
+                        : <span> {this.state.userbox} </span>
+                  }
             <br/>
             <label value=" "><b> EMAIL to update about your request: &nbsp;&nbsp; </b> </label>
-            <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox}  onChange={this.props.userId !== 0 ? null : this.handleChangeMB}  />
+                  {this.props.userId == 0 ? 
+                         <input type="text" id="mail" name="email" placeholder="@optional field" value={this.state.mailbox}  onChange={this.handleChangeMB}  />
+                         : <span> {this.state.mailbox} </span>
+                  }
             <br/><br/>
             <Button type="submit" value="Submit" variant="danger">submit</Button> {' '}  <br />
-            
-            
             <br />
             {/* request #34 : hearts */} <span>&#x2764; &#x2764;  &#x2764;</span> 
             <AwesomeComponent loading={this.state.loading} />
-            
             <br />
           </form>
-          
           <RequestTableTemp/> 
           <br/><br/>
           <a href="https://github.com/gilweiss/Request.me"> <img src={githubMark} alt="Request.me GitHub" hight="32px" width="32px"></img> </a>
