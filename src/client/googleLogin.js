@@ -50,12 +50,13 @@ class ConnectedGoogleLogin extends React.Component {
         let profile = googleUser.getBasicProfile();
         //this.props.dispatch(setUser(profile.getId()))
 
-        this.props.dispatch(setUser(profile.getId()))
+        
 
-        var userName = profile.getGivenName().substring(0, 7);
+        var userName = profile.getGivenName().substring(0, 14);
         this.setState({ name: profile.getGivenName() })
-        var address = profile.getEmail();
-        this.props.fillBoxesFunction(userName, address);
+        var userEmail = profile.getEmail();
+        this.props.dispatch(setUser(profile.getId(), userName, userEmail))
+        this.props.fillBoxesFunction(userName, userEmail);
       }, (error) => {
         console.log("error with google login: " + JSON.stringify(error, undefined, 2));
       });

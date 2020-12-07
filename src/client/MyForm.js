@@ -137,8 +137,10 @@ class ConnectedMyForm extends React.Component {
 
         this.setState({ loading: false });
         this.setState({ textbox: response.data.message });
+        if (this.props.userId == 0) {
         this.setState({ userbox: "" });
         this.setState({ mailbox: "" });
+        }
         setTimeout(() => { this.setState({ textbox: "" }); }, 2000);
 
       }, (error) => {

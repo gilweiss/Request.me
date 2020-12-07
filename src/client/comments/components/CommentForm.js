@@ -2,13 +2,10 @@ import { css } from 'emotion';
 import  React from 'react';
 import { commentButton } from '../styles/Btn.css';
 import { commentTextarea } from '../styles/Textarea.css';
+import { connect } from 'react-redux'      
 
 
-
-
-
-
-export class CommentForm extends React.Component {
+class ConnectedCommentForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,6 +22,7 @@ export class CommentForm extends React.Component {
           return (
             <div className={'formBox'}>
             <form onSubmit={this.onSubmit}>
+            {this.props.userId == 0 ?
               <textarea
                 className={'commentNameArea'}
                 name="comment-name"
@@ -32,8 +30,13 @@ export class CommentForm extends React.Component {
                 placeholder="your name"
                 value={this.state.name}
                 onChange={this.onChangeName}
-               
               />
+              :
+              <div className= {'commentNameAreaReadOnly'}>
+
+               <span> {this.props.userName} </span>
+             </div>
+            }
 
               <textarea
                 className={'commentTextarea'}
@@ -62,12 +65,24 @@ export class CommentForm extends React.Component {
    onSubmit = (event) => {
     event.preventDefault();
     const text = this.state.text.trim().replace(/\n{3,}/g, '\n\n');
-    const name = this.state.name.trim().replace(/\n{3,}/g, '\n\n');
+    const name = (this.props.userId !== 0 ? this.props.userName : this.state.name.trim().replace(/\n{3,}/g, '\n\n'));
+    console.log("trimmed constant: "+ name);
     this.props.onSubmit(text, name);
+
     this.setState({ text: '' });
-    this.setState({ name: '' });
+    if (this.props.userId == 0 ) this.setState({ name: '' });
     
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return { userId: state.user.id,
+           userName: state.user.name,
+           userEmail: state.user.email }
+}
+
+const CommentForm = connect(mapStateToProps
+)(ConnectedCommentForm);
+
 export default CommentForm;
+

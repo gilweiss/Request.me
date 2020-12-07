@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CommentForm } from './CommentForm';
+import CommentForm from './CommentForm';
 import { CommentsList } from './CommentsList';
 
 

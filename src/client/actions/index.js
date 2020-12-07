@@ -3,13 +3,13 @@ import { getUserLikesFromServer } from '../serverUtils';
 import { getMaxLikeSum } from '../serverUtils';
 
 
-export const setUser = (userId) => {
+export const setUser = (userId, userName, userEmail) => {
   return async dispatch =>                           //thank you thunk
   {
     const userLikeTable = await getUserLikesFromServer(userId);
     dispatch({
       type: 'SET_USER',                             //const name for action
-      userId, userLikeTable					                //transfered data
+      userId, userLikeTable, userName, userEmail	  //transfered data
     })
   }
 }
